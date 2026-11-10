@@ -1,0 +1,269 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Money is stored as integer fils (1 AED = 100 fils) so it is exact and serialisable.
+
+/// Staff accounts for the CRM back office.
+model User {
+  id           String    @id @default(cuid())
+  createdAt    DateTime  @default(now())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         String    @default("sales") // admin | manager | sales | ops | viewer
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+
+  sessions   Session[]
+  leads      Lead[]     @relation("LeadOwner")
+  companies  Company[]  @relation("CompanyOwner")
+  tasks      Task[]     @relation("TaskAssignee")
+  activities Activity[]
+  quotes     Quote[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique // sha256 of the cookie token
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  userAgent String?
+
+  @@index([userId])
+}
+
+/// A customer or prospect organisation.
+model Company {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name      String
+  industry  String?
+  website   String?
+  phone     String?
+  email     String?
+  address   String?
+  city      String?
+  country   String   @default("United Arab Emirates")
+  taxNumber String? // TRN
+  status    String   @default("prospect") // prospect | active | inactive
+  tags      String[]
+  notes     String?
+  ownerId   String?
+  owner     User?    @relation("CompanyOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+
+  contacts   Contact[]
+  leads      Lead[]
+  quotes     Quote[]
+  activities Activity[]
+  tasks      Task[]
+
+  @@index([name])
+  @@index([status])
+}
+
+/// A person at a company (or a standalone contact).
+model Contact {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  name      String
+  jobTitle  String?
+  email     String?
+  phone     String?
+  whatsapp  String?
+  isPrimary Boolean  @default(false)
+  notes     String?
+
+  leads      Lead[]
+  quotes     Quote[]
+  activities Activity[]
+
+  @@index([companyId])
+  @@index([email])
+}
+
+/// An enquiry / opportunity. Website forms and the website chat create these automatically.
+model Lead {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  source   String // website | chat | quote | contact | phone | whatsapp | email | referral | walk_in | other
+  stage    String  @default("new") // new | contacted | qualified | quote_sent | negotiation | won | lost
+  title    String? // short summary, e.g. "Export crates for 3 gearboxes"
+  priority String  @default("normal") // low | normal | high
+  score    Int     @default(0) // 0-100 heuristic lead score
+
+  // as submitted by the visitor
+  name       String?
+  company    String?
+  email      String?
+  phone      String?
+  industry   String?
+  products   String[]
+  message    String?
+  transcript Json?
+  pageUrl    String?
+
+  // CRM fields
+  valueFils         Int?
+  expectedCloseDate DateTime?
+  lostReason        String?
+  closedAt          DateTime? // set when the enquiry is won or lost
+  lastContactedAt   DateTime?
+  ownerId           String?
+  owner             User?     @relation("LeadOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  companyId         String?
+  account           Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  contactId         String?
+  person            Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  quotes     Quote[]
+  activities Activity[]
+  tasks      Task[]
+
+  @@index([createdAt])
+  @@index([stage])
+  @@index([ownerId])
+}
+
+model Quote {
+  id           String      @id @default(cuid())
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  number       String      @unique // e.g. RAD-Q-0001
+  status       String      @default("draft") // draft | sent | accepted | rejected | expired
+  title        String?
+  leadId       String?
+  lead         Lead?       @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  companyId    String?
+  company      Company?    @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  contactId    String?
+  contact      Contact?    @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  validUntil   DateTime?
+  sentAt       DateTime?
+  currency     String      @default("AED")
+  vatRate      Float       @default(5)
+  subtotalFils Int         @default(0)
+  discountFils Int         @default(0)
+  vatFils      Int         @default(0)
+  totalFils    Int         @default(0)
+  notes        String?
+  terms        String?
+  createdById  String?
+  createdBy    User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  items        QuoteItem[]
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+model QuoteItem {
+  id            String  @id @default(cuid())
+  quoteId       String
+  quote         Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  position      Int     @default(0)
+  description   String
+  unit          String  @default("pcs")
+  quantity      Float   @default(1)
+  unitPriceFils Int     @default(0)
+  productId     String?
+
+  @@index([quoteId])
+}
+
+/// Internal price list used by the quote builder.
+model Product {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  name          String
+  sku           String?
+  category      String? // one of the five product lines (slug)
+  unit          String   @default("pcs")
+  unitPriceFils Int      @default(0)
+  description   String?
+  active        Boolean  @default(true)
+
+  @@index([category])
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  title       String
+  notes       String?
+  kind        String    @default("follow_up") // follow_up | call | email | meeting | site_visit | quote | other
+  priority    String    @default("normal") // low | normal | high
+  dueAt       DateTime?
+  completedAt DateTime?
+  assigneeId  String?
+  assignee    User?     @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: SetNull)
+  leadId      String?
+  lead        Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  companyId   String?
+  company     Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([assigneeId, completedAt])
+  @@index([dueAt])
+}
+
+/// Timeline entries: notes, calls, emails, meetings, stage changes.
+model Activity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  kind      String   @default("note") // note | call | email | whatsapp | meeting | site_visit | stage_change | system
+  body      String
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contactId String?
+  contact   Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+  @@index([companyId, createdAt])
+  @@index([createdAt])
+}
+
+/// Key/value business settings (company profile, VAT, quote terms).
+model Setting {
+  key   String @id
+  value Json
+}
+
+/// Atomic counters, e.g. the quote number sequence.
+model Counter {
+  key   String @id
+  value Int    @default(0)
+}
+
+/// One row per website chat conversation, so the team can see what customers ask.
+model ChatSession {
+  id        String        @id @default(cuid())
+  createdAt DateTime      @default(now())
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  createdAt DateTime    @default(now())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String // user | assistant
+  content   String
+
+  @@index([sessionId, createdAt])
+}
