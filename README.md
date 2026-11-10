@@ -55,13 +55,7 @@ Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`. The first sign-
 
 Production: https://rad-packing.vercel.app (Vercel project `rad-packing`, Prisma Postgres database `rad-packing-db`).
 
-**Automatic deploys:** every push to `main` runs `.github/workflows/deploy.yml`, which deploys with the Vercel CLI. (Vercel's Git integration cannot connect a *private GitHub org* repo on the Hobby plan, so the workflow does the job.) One-time setup:
-
-1. Create a token at <https://vercel.com/account/tokens> (scope: the `cerofrais-projects` team).
-2. Add it as a repo secret: `gh secret set VERCEL_TOKEN --repo Ascent-Intelligent-Techonologies/rad-packing`
-3. The repo variables `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` are already set.
-
-Until the secret exists the workflow finishes with a "Deploy skipped" warning. You can also deploy by hand with `npx vercel@latest deploy --prod`.
+The Vercel project is connected to this GitHub repo, so **every push to `main` deploys automatically**. You can also deploy by hand with `npx vercel@latest deploy --prod`.
 
 The build runs `prisma generate`, `prisma migrate deploy` and `next build`. Production environment variables (database URL from the Prisma Postgres integration, `ADMIN_EMAIL`, `ADMIN_PASSWORD`) live in the Vercel project. Add the `radpacking.com` domain in the project's Domains settings when ready to go live.
 
