@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Building2, Download, Plus, Search } from "lucide-react";
+import { BulkDelete, RowCheck, SelectAll } from "@/components/crm/BulkDelete";
 import { Pager } from "@/components/crm/customers/Pager";
+import { bulkDeleteCustomers } from "./actions";
 import { OwnerSelect } from "@/components/crm/customers/fields";
 import { EmptyState, Field, OptBadge, PageHeader, Panel, TableWrap } from "@/components/crm/ui";
 import type { Prisma } from "@/generated/prisma/client";
@@ -102,6 +104,7 @@ export default async function CustomersPage(props: PageProps<"/admin/customers">
 
   const canWrite = can(user.role, "write");
   const canExport = can(user.role, "reports");
+  const canDelete = can(user.role, "delete");
   const filtered = Boolean(q || status || owner);
   const filterParams = { q, status, owner, sort: sort === "activity" ? "" : sort };
 
@@ -174,6 +177,18 @@ export default async function CustomersPage(props: PageProps<"/admin/customers">
         </div>
       </form>
 
+      {canDelete && rows.length > 0 && (
+        <div className="mb-3 flex justify-end">
+          <BulkDelete
+            formId="bulk-customers"
+            action={bulkDeleteCustomers}
+            noun="customer"
+            nounPlural="customers"
+            warning="Their tasks and timeline are removed. Contacts, enquiries and quotes are kept but unlinked."
+          />
+        </div>
+      )}
+
       <Panel flush>
         {rows.length === 0 ? (
           <EmptyState
@@ -192,8 +207,13 @@ export default async function CustomersPage(props: PageProps<"/admin/customers">
             {/* phones: stacked cards */}
             <ul className="divide-y divide-line md:hidden">
               {rows.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/admin/customers/${c.id}`} className="block px-4 py-3.5 active:bg-brand-50/40">
+                <li key={c.id} className="flex items-stretch">
+                  {canDelete && (
+                    <span className="grid w-11 shrink-0 place-items-center">
+                      <RowCheck formId="bulk-customers" id={c.id} label={`Select ${c.name}`} />
+                    </span>
+                  )}
+                  <Link href={`/admin/customers/${c.id}`} className={`block min-w-0 flex-1 py-3.5 pr-4 active:bg-brand-50/40 ${canDelete ? "pl-0" : "pl-4"}`}>
                     <div className="flex items-start justify-between gap-3">
                       <span className="flex min-w-0 items-center gap-2 font-bold">
                         <Building2 size={16} className="shrink-0 text-brand" />
@@ -224,6 +244,11 @@ export default async function CustomersPage(props: PageProps<"/admin/customers">
               <TableWrap>
                 <thead>
                   <tr>
+                    {canDelete && (
+                      <th className="w-10">
+                        <SelectAll formId="bulk-customers" label="Select all customers" />
+                      </th>
+                    )}
                     <th>Customer</th>
                     <th>Industry</th>
                     <th>City</th>
@@ -238,6 +263,11 @@ export default async function CustomersPage(props: PageProps<"/admin/customers">
                 <tbody>
                   {rows.map((c) => (
                     <tr key={c.id}>
+                      {canDelete && (
+                        <td>
+                          <RowCheck formId="bulk-customers" id={c.id} label={`Select ${c.name}`} />
+                        </td>
+                      )}
                       <td className="max-w-[260px]">
                         <Link href={`/admin/customers/${c.id}`} className="block truncate font-bold text-brand hover:underline">
                           {c.name}

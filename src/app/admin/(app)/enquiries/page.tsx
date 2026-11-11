@@ -8,7 +8,9 @@ import { can } from "@/lib/crm/permissions";
 import { PRIORITIES, SOURCES, STAGES } from "@/lib/crm/constants";
 import { aed, nowMs, timeAgo } from "@/lib/crm/format";
 import { Avatar, EmptyState, OptBadge, PageHeader, Panel, ScoreChip, StageBadge, TableWrap } from "@/components/crm/ui";
+import { BulkDelete, RowCheck, SelectAll } from "@/components/crm/BulkDelete";
 import { Board, type BoardCard } from "./Board";
+import { bulkDeleteEnquiries } from "./actions";
 
 export const metadata: Metadata = { title: "Enquiries" };
 
@@ -24,6 +26,7 @@ export default async function EnquiriesPage(props: PageProps<"/admin/enquiries">
   const priority = str(sp.priority);
   const stage = str(sp.stage);
   const canWrite = can(user.role, "write");
+  const canDelete = can(user.role, "delete");
   const db = getDb()!;
 
   const and: Prisma.LeadWhereInput[] = [];
@@ -169,10 +172,27 @@ export default async function EnquiriesPage(props: PageProps<"/admin/enquiries">
       ) : view === "board" ? (
         <Board cards={cards} canWrite={canWrite} />
       ) : (
+        <>
+        {canDelete && (
+          <div className="mb-3 flex justify-end">
+            <BulkDelete
+              formId="bulk-enquiries"
+              action={bulkDeleteEnquiries}
+              noun="enquiry"
+              nounPlural="enquiries"
+              warning="Their tasks and timeline are removed. Quotes are kept but unlinked."
+            />
+          </div>
+        )}
         <Panel flush>
           <TableWrap>
             <thead>
               <tr>
+                {canDelete && (
+                  <th className="w-10">
+                    <SelectAll formId="bulk-enquiries" label="Select all enquiries" />
+                  </th>
+                )}
                 <th>Enquiry</th>
                 <th>Customer</th>
                 <th>Source</th>
@@ -186,6 +206,11 @@ export default async function EnquiriesPage(props: PageProps<"/admin/enquiries">
             <tbody>
               {leads.map((l) => (
                 <tr key={l.id}>
+                  {canDelete && (
+                    <td>
+                      <RowCheck formId="bulk-enquiries" id={l.id} label={`Select ${l.title || l.company || l.name || l.email || "enquiry"}`} />
+                    </td>
+                  )}
                   <td className="max-w-[280px]">
                     <Link href={`/admin/enquiries/${l.id}`} className="font-bold text-brand hover:underline">
                       {l.title || l.company || l.name || l.email || "Untitled enquiry"}
@@ -210,6 +235,7 @@ export default async function EnquiriesPage(props: PageProps<"/admin/enquiries">
             </tbody>
           </TableWrap>
         </Panel>
+        </>
       )}
     </>
   );

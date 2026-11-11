@@ -146,3 +146,20 @@ export async function deleteCustomer(id: string): Promise<void> {
   revalidatePath("/admin/tasks");
   redirect("/admin/customers");
 }
+
+/** Delete several customers at once. Their tasks and timeline go; contacts, enquiries and quotes are kept, unlinked. */
+export async function bulkDeleteCustomers(fd: FormData): Promise<void> {
+  await requireUser("delete");
+  const ids = [...new Set(fd.getAll("ids").map(String))].filter(Boolean).slice(0, 500);
+  if (!ids.length) return;
+  const db = getDb()!;
+  await db.$transaction([
+    db.contact.updateMany({ where: { companyId: { in: ids } }, data: { isPrimary: false } }),
+    db.company.deleteMany({ where: { id: { in: ids } } }),
+  ]);
+  revalidateCustomers();
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin/quotes");
+  revalidatePath("/admin/tasks");
+  revalidatePath("/admin");
+}

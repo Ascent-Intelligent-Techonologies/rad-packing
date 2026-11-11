@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDb } from "@/lib/db";
 import { requireUser } from "@/lib/crm/auth";
+import { can } from "@/lib/crm/permissions";
+import { Trash2 } from "lucide-react";
+import { ConfirmButton } from "@/components/crm/forms";
+import { deleteChat } from "../actions";
 import { fmtDateTime, timeAgo } from "@/lib/crm/format";
 import { Badge, PageHeader, Panel } from "@/components/crm/ui";
 
@@ -22,7 +26,7 @@ function Rich({ text }: { text: string }) {
 }
 
 export default async function ChatPage(props: PageProps<"/admin/chats/[id]">) {
-  await requireUser("view");
+  const user = await requireUser("view");
   const { id } = await props.params;
   const db = getDb()!;
 
@@ -50,6 +54,13 @@ export default async function ChatPage(props: PageProps<"/admin/chats/[id]">) {
               {session.messages.length} {session.messages.length === 1 ? "message" : "messages"}
             </Badge>
             <Badge tone="slate">{visitorCount} from the visitor</Badge>
+            {can(user.role, "delete") && (
+              <form action={deleteChat.bind(null, session.id)}>
+                <ConfirmButton message="Delete this conversation and all of its messages? This cannot be undone.">
+                  <Trash2 size={15} /> Delete conversation
+                </ConfirmButton>
+              </form>
+            )}
           </>
         }
       />

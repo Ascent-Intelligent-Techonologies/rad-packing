@@ -191,3 +191,15 @@ export async function deleteEnquiry(id: string) {
   revalidatePath("/admin/enquiries");
   redirect("/admin/enquiries");
 }
+
+/** Delete several enquiries at once (list view). Tasks and timeline go with them; quotes are kept, unlinked. */
+export async function bulkDeleteEnquiries(fd: FormData): Promise<void> {
+  await requireUser("delete");
+  const ids = [...new Set(fd.getAll("ids").map(String))].filter(Boolean).slice(0, 500);
+  if (!ids.length) return;
+  await getDb()!.lead.deleteMany({ where: { id: { in: ids } } });
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin");
+  revalidatePath("/admin/tasks");
+  revalidatePath("/admin/reports");
+}

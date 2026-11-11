@@ -3,13 +3,17 @@ import type { Metadata } from "next";
 import { ChevronRight, MessageSquare } from "lucide-react";
 import { getDb } from "@/lib/db";
 import { requireUser } from "@/lib/crm/auth";
+import { can } from "@/lib/crm/permissions";
+import { BulkDelete, RowCheck, SelectAll } from "@/components/crm/BulkDelete";
+import { bulkDeleteChats } from "./actions";
 import { fmtDateTime, timeAgo } from "@/lib/crm/format";
 import { Badge, EmptyState, PageHeader, Panel, StatCard } from "@/components/crm/ui";
 
 export const metadata: Metadata = { title: "Website chat" };
 
 export default async function ChatsPage() {
-  await requireUser("view");
+  const user = await requireUser("view");
+  const canDelete = can(user.role, "delete");
   const db = getDb()!;
 
   // Start of today in Dubai (UTC+4).
@@ -43,7 +47,7 @@ export default async function ChatsPage() {
     <>
       <PageHeader
         title="Website chat"
-        subtitle="What visitors ask the website assistant. Read-only: enquiries it captures appear under Enquiries."
+        subtitle="What visitors ask the website assistant. Enquiries it captures appear under Enquiries."
       />
 
       <section aria-label="Conversation totals" className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3 sm:gap-4">
@@ -52,7 +56,31 @@ export default async function ChatsPage() {
         <StatCard label="All time" value={total.toLocaleString("en-GB")} hint="Conversations recorded" />
       </section>
 
-      <Panel title="Latest conversations" flush className="mt-6" actions={sessions.length ? <span className="text-xs text-muted">Latest {sessions.length}</span> : undefined}>
+      <Panel
+        title="Latest conversations"
+        flush
+        className="mt-6"
+        actions={
+          sessions.length ? (
+            canDelete ? (
+              <div className="flex items-center gap-3">
+                <label className="flex cursor-pointer items-center gap-2 text-xs font-semibold text-muted">
+                  <SelectAll formId="bulk-chats" label="Select all conversations" /> All
+                </label>
+                <BulkDelete
+                  formId="bulk-chats"
+                  action={bulkDeleteChats}
+                  noun="conversation"
+                  nounPlural="conversations"
+                  warning="All of their messages are deleted too."
+                />
+              </div>
+            ) : (
+              <span className="text-xs text-muted">Latest {sessions.length}</span>
+            )
+          ) : undefined
+        }
+      >
         {sessions.length === 0 ? (
           <EmptyState
             title="No conversations yet"
@@ -63,10 +91,15 @@ export default async function ChatsPage() {
             {sessions.map((s) => {
               const preview = s.messages[0]?.content;
               return (
-                <li key={s.id}>
+                <li key={s.id} className="flex items-stretch">
+                  {canDelete && (
+                    <span className="grid w-12 shrink-0 place-items-center pl-2">
+                      <RowCheck formId="bulk-chats" id={s.id} label={`Select conversation ${preview ?? s.id}`} />
+                    </span>
+                  )}
                   <Link
                     href={`/admin/chats/${s.id}`}
-                    className="flex min-h-[64px] items-center gap-3 px-5 py-3.5 transition hover:bg-[#f8f9ff]"
+                    className={`flex min-h-[64px] min-w-0 flex-1 items-center gap-3 py-3.5 pr-5 transition hover:bg-[#f8f9ff] ${canDelete ? "pl-2" : "pl-5"}`}
                   >
                     <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-50 text-brand" aria-hidden="true">
                       <MessageSquare size={18} />
