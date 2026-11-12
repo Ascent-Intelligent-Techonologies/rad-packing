@@ -267,3 +267,80 @@ model ChatMessage {
 
   @@index([sessionId, createdAt])
 }
+
+// ─── Website catalogue ───────────────────────────────────────────────────────
+// What visitors see under /products. Managed from /admin/catalogue (separate from the
+// internal price list above, which is only used to build quotes).
+
+/// A node in the catalogue tree: Category → Sub-category → … Products hang off any node.
+model CatalogCategory {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  slug        String            @unique
+  name        String
+  summary     String? // one line, shown on cards
+  description String? // longer intro on the category page
+  icon        String? // key from CATEGORY_ICONS (placeholder tile when there is no photo)
+  position    Int               @default(0) // order among siblings
+  published   Boolean           @default(true)
+  parentId    String?
+  parent      CatalogCategory?  @relation("CatalogTree", fields: [parentId], references: [id], onDelete: Restrict)
+  children    CatalogCategory[] @relation("CatalogTree")
+  products    CatalogProduct[]
+  images      CatalogImage[]
+
+  @@index([parentId, position])
+}
+
+model CatalogProduct {
+  id          String          @id @default(cuid())
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  slug        String          @unique
+  title       String
+  summary     String? // one or two sentences, shown on cards
+  description String? // full text (paragraphs, "- " bullets, **bold**)
+  highlights  String[] // short bullet points
+  specs       Json? // [{ label, value }]
+  tags        String[]
+  published   Boolean         @default(true)
+  featured    Boolean         @default(false)
+  position    Int             @default(0)
+  categoryId  String
+  category    CatalogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  images      CatalogImage[]
+
+  @@index([categoryId, published])
+  @@index([published, featured])
+}
+
+/// Photo metadata. Belongs to a product or a category; rows with neither are fresh uploads
+/// that have not been saved yet (cleaned up after a day). The bytes live in CatalogImageBlob so
+/// that lists never pull image data.
+model CatalogImage {
+  id         String            @id @default(cuid())
+  createdAt  DateTime          @default(now())
+  productId  String?
+  product    CatalogProduct?   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  categoryId String?
+  category   CatalogCategory?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  position   Int               @default(0)
+  alt        String?
+  mime       String // image/webp | image/jpeg | image/png
+  width      Int
+  height     Int
+  bytes      Int // size of the full-size file
+  blob       CatalogImageBlob?
+
+  @@index([productId, position])
+  @@index([categoryId, position])
+  @@index([productId, categoryId, createdAt])
+}
+
+model CatalogImageBlob {
+  imageId String       @id
+  image   CatalogImage @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  full    Bytes // as uploaded, already resized in the browser
+  thumb   Bytes // small version for grids
+}

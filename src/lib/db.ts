@@ -16,7 +16,8 @@ export function getDb(): PrismaClient | null {
   if (!url) return null;
   if (!globalForPrisma.prisma) {
     globalForPrisma.prisma = new PrismaClient({
-      adapter: new PrismaPg({ connectionString: url }),
+      // small pool: serverless instances and parallel build workers share a small database
+      adapter: new PrismaPg({ connectionString: url, max: 4 }),
     });
   }
   return globalForPrisma.prisma;

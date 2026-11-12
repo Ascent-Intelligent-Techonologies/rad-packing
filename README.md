@@ -8,6 +8,11 @@ Modern, mobile-first rebuild of [radpacking.com](https://www.radpacking.com) wit
 
 ### Public website (`/`)
 - Home, About, Products & Solutions, Contact, Privacy Policy, Accessibility Statement. All copy comes from the current site.
+- **Product catalogue** (`/products`): category → sub-category → product hierarchy with a category sidebar, live search, paged product grid, category pages (`/products/category/<path>`), and product pages with photo gallery, features, specifications and a pre-filled quote form.
+  - Choosing a category, searching and paging update only the product area (no page reload); the address bar still changes, so views can be shared and Back works. It also works without JavaScript.
+  - Search is word based (any order, singular or plural, title matches first) and looks in titles, tags, categories and descriptions. See `searchCatalogue` in `src/lib/catalogue/public.ts`.
+  - Products without a photo show an original illustration picked from the product type (`src/components/catalogue/ProductArt.tsx`) until staff upload a real photo.
+  - Everything is managed from the admin (see *Website catalogue* below), cached, and refreshed the moment staff save a change.
 - Header with both phone numbers, location bar, mobile menu, and a thumb-reach **Call / WhatsApp / Quote** bar on phones.
 - Full-bleed looping "packaging line" hero (drop a real clip at `public/media/hero.mp4` and it fades in over the animation).
 - **Smart Chat** widget (structured, rule-based, no AI model): answers common questions with bold key terms, page-link chips and quick-reply buttons, then opens an inline lead form (name, email, phone, message).
@@ -24,6 +29,7 @@ Email + password staff login (server-side, revocable sessions; scrypt-hashed pas
 | Customers / Contacts | Company records, contacts, notes & timeline, linked enquiries/quotes/tasks |
 | Quotes | Line-item builder from the price list, 5% UAE VAT, numbering `RAD-Q-0001`, printable/PDF, status workflow |
 | Tasks | My / all / overdue / today, linked to enquiries and customers |
+| Website catalogue | Add, edit, hide and remove the categories and products shown on `/products`: titles, descriptions, key features, specifications, tags and photo uploads (several per product, reorderable, first = cover). Photos are resized in the browser and stored in the database, so nothing extra to set up |
 | Price list | Internal product & service prices used in quotes |
 | AI chats | Read-only log of website chat conversations (what customers ask) |
 | Reports | Funnel, sources, industries, products, win rate, leaderboard, CSV exports |

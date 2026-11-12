@@ -220,7 +220,7 @@ export default function Home() {
           </ol>
           <Conveyor />
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/products#turnkey" className="btn btn-accent">
+            <Link href="/products/category/turnkey" className="btn btn-accent">
               See turnkey contracting <ArrowRight size={17} />
             </Link>
             <OpenChatButton prompt="Tell me about onsite packing" className="btn btn-glass">
@@ -287,7 +287,7 @@ export default function Home() {
             {products.map((p) => (
               <Link
                 key={p.slug}
-                href={`/products#${p.slug}`}
+                href={`/products/category/${p.slug}`}
                 className="card card-hover group flex w-[280px] shrink-0 snap-start flex-col p-6 lg:w-auto"
               >
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-brand-50 text-brand transition group-hover:bg-linear-to-br group-hover:from-orange group-hover:to-pink group-hover:text-white">

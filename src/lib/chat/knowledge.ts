@@ -50,7 +50,7 @@ const intents: Intent[] = [
     reply: {
       message:
         "Yes! Our **onsite & mobile packing** teams come directly to your **facility, workshop or port** to preserve machinery on location 🚚 No need to move equipment before it's protected.",
-      links: [L("/products#turnkey"), L("/products"), L("/contact")],
+      links: [L("/products/category/turnkey"), L("/products"), L("/contact")],
       suggestions: ["I want to contact you", "I need a tailored solution"],
       showLeadForm: false,
     },
@@ -60,7 +60,7 @@ const intents: Intent[] = [
     reply: {
       message:
         "For sea shipping we use **heavy-duty barrier bags**, **desiccant integration** and **vacuum-sealed crating** against moisture, corrosion and salt air 🚢 We add **VCI films**, **wooden packaging** and custom protective packaging for rough ocean freight and long transit.",
-      links: [L("/products"), L("/products#preservation"), L("/products#wooden")],
+      links: [L("/products"), L("/products/category/preservation"), L("/products/category/wooden")],
       suggestions: ["I want to contact you", "Tell me about onsite packing", "I need a tailored solution"],
       showLeadForm: false,
     },
@@ -70,7 +70,7 @@ const intents: Intent[] = [
     reply: {
       message:
         "Our **preservation packing** combines **VCI (Volatile Corrosion Inhibitor) films**, **high-barrier foils** and **desiccants** to stop rust and moisture damage before it starts 🛡️ VCI shields bare metal without greasy coatings, ideal for long-term storage and transit.",
-      links: [L("/products#preservation"), L("/about")],
+      links: [L("/products/category/preservation"), L("/about")],
       suggestions: ["How do I protect machinery for sea shipping?", "I need a tailored solution", "I want to contact you"],
       showLeadForm: false,
     },
@@ -80,7 +80,7 @@ const intents: Intent[] = [
     reply: {
       message:
         "We build **export crates**, **plywood boxes**, **timber cases** and **industrial pallets** to export standards 📦 Our **nail-less collapsible boxes** use E1-grade plywood (6, 9 or 12 mm) with galvanized steel strips, hinges and buckles. Eco-conscious options comply with regulations like **ISPM 15**.",
-      links: [L("/products#nailless-boxes"), L("/products#wooden"), L("/products#quote")],
+      links: [L("/products/category/nailless-boxes"), L("/products/category/wooden"), L("/products#quote")],
       suggestions: ["I want to contact you", "Tell me about onsite packing"],
       showLeadForm: false,
     },
@@ -90,7 +90,7 @@ const intents: Intent[] = [
     reply: {
       message:
         "Our **turnkey contracting** covers everything: **site assessment**, planning, **material supply**, **on-site packing and preservation**, crating and **export preparation** ✅ One accountable partner from start to shipment-ready.",
-      links: [L("/products#turnkey"), L("/products#quote")],
+      links: [L("/products/category/turnkey"), L("/products#quote")],
       suggestions: ["I want to contact you", "How do I protect machinery for sea shipping?"],
       showLeadForm: false,
     },
@@ -211,7 +211,7 @@ function modeQuestion(assetLabel: string): ChatReply {
 function recommendation(asset: Asset, mode: (typeof modes)[number]): ChatReply {
   return {
     message: `For **${asset.label}** going by **${mode.label}**, we'd recommend ${parts[asset.id][mode.id]} ✅ Our team will tailor the exact specification to your asset.`,
-    links: [L("/products#preservation"), L("/products#quote")],
+    links: [L("/products/category/preservation"), L("/products#quote")],
     suggestions: ["I need a tailored solution", "Tell me about onsite packing", "I want to contact you"],
     showLeadForm: false,
   };

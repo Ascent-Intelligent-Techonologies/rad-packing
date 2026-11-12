@@ -6,6 +6,7 @@ export type Capability =
   | "delete" //   delete records
   | "reports" //  reports + exports
   | "catalogue" // edit the price list
+  | "website" //   edit the public website catalogue (categories, products, photos)
   | "settings" // business settings
   | "team"; //    manage staff accounts
 
@@ -15,6 +16,7 @@ const matrix: Record<Capability, Role[]> = {
   delete: ["admin", "manager"],
   reports: ["admin", "manager", "viewer"],
   catalogue: ["admin", "manager"],
+  website: ["admin", "manager", "sales", "ops"],
   settings: ["admin", "manager"],
   team: ["admin"],
 };

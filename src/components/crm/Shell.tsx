@@ -12,6 +12,7 @@ export async function AuthedShell({ children }: { children: React.ReactNode }) {
     settings: can(user.role, "settings"),
     write: can(user.role, "write"),
     catalogue: can(user.role, "catalogue"),
+    website: can(user.role, "website"),
   };
   return (
     <div className="min-h-dvh bg-surface">

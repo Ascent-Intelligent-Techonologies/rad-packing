@@ -11,10 +11,16 @@ type Status = "idle" | "sending" | "done" | "error";
 export function LeadForm({
   variant = "contact",
   dark = false,
+  defaultMessage,
+  defaultInterest,
 }: {
   variant?: Variant;
   /** render on a dark surface */
   dark?: boolean;
+  /** pre-filled message, e.g. "I'd like a quote for: <product>" */
+  defaultMessage?: string;
+  /** pre-selected solution (a slug from site.ts `products`) when the URL doesn't name one */
+  defaultInterest?: string;
 }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
@@ -27,7 +33,8 @@ export function LeadForm({
   );
   const fromUrl = (() => {
     const q = variant === "quote" ? new URLSearchParams(search).get("interest") : null;
-    return q && products.some((p) => p.slug === q) ? [q] : [];
+    if (q && products.some((p) => p.slug === q)) return [q];
+    return variant === "quote" && defaultInterest && products.some((p) => p.slug === defaultInterest) ? [defaultInterest] : [];
   })();
   const picked = chosen ?? fromUrl;
   const pickedRef = useRef(picked);
@@ -207,6 +214,7 @@ export function LeadForm({
             name="message"
             required
             minLength={5}
+            defaultValue={defaultMessage}
             className="field"
             placeholder={
               variant === "quote"

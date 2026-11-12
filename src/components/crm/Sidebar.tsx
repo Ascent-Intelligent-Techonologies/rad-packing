@@ -11,6 +11,7 @@ import {
   FileText,
   Inbox,
   LayoutDashboard,
+  LayoutGrid,
   LogOut,
   Menu,
   MessageSquare,
@@ -34,7 +35,7 @@ export function Sidebar({
   perms,
 }: {
   user: { name: string; email: string; role: string; roleLabel: string };
-  perms: { reports: boolean; team: boolean; settings: boolean; write: boolean; catalogue: boolean };
+  perms: { reports: boolean; team: boolean; settings: boolean; write: boolean; catalogue: boolean; website: boolean };
 }) {
   const pathname = usePathname();
   const [openFor, setOpenFor] = useState<string | null>(null);
@@ -67,6 +68,7 @@ export function Sidebar({
     {
       title: "Catalogue & insights",
       items: [
+        { href: "/admin/catalogue", label: "Website catalogue", icon: LayoutGrid, show: perms.website },
         { href: "/admin/products", label: "Price list", icon: Package, show: true },
         { href: "/admin/chats", label: "Website chat", icon: MessageSquare, show: true },
         { href: "/admin/reports", label: "Reports", icon: BarChart3, show: perms.reports },
