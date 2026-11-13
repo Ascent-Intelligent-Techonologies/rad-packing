@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ChevronRight, Loader2, Search, SearchX, X } from "lucide-react";
 import { OpenChatButton } from "@/components/OpenChatButton";
 import type { ProductPage, PublicCategory } from "@/lib/catalogue/public";
@@ -19,7 +19,7 @@ const SEARCH_DELAY_MS = 300;
 /**
  * Interactive catalogue. The address bar is the source of truth (category, search and page live in
  * the URL, so views can be shared and Back works), but changing any of them only swaps the product
- * area: no page reload and no jump to the top.
+ * area: no page reload, and the visitor is left at the start of that area, not the top of the page.
  */
 export function CatalogueClient({
   categories,
@@ -65,26 +65,61 @@ export function CatalogueClient({
   const resultsRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
 
-  /** Bring `el` to the top only when the visitor has scrolled past it (or it is below the screen). */
+  /** Jump so `el` sits just under the header, but only when the visitor cannot already see it. */
   const reveal = (el: HTMLElement | null) => {
     if (!el) return;
     const { top } = el.getBoundingClientRect();
-    if (top < 96 || top > window.innerHeight * 0.75) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (top < 90 || top > window.innerHeight * 0.75) el.scrollIntoView({ behavior: "instant", block: "start" });
   };
-  // Scrolling waits until the new view is on screen: the heading above the catalogue can change
-  // height with the category, which would otherwise leave us a few lines off.
-  const pendingReveal = useRef<"top" | "results" | null>(null);
+
+  // How the view last changed: by a control in the catalogue (`go`), by Back / Forward, or by a link
+  // elsewhere on the page (the header's "Products", "Get a Quote", the footer).
+  const ownMove = useRef<"top" | "results" | "none" | null>(null);
+  const historyUrl = useRef<string | null>(null);
   useEffect(() => {
-    const where = pendingReveal.current;
-    pendingReveal.current = null;
-    if (where) reveal(where === "top" ? topRef.current : resultsRef.current);
-  }, [key]);
+    const onPop = () => {
+      historyUrl.current = window.location.pathname + window.location.search;
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // Runs once the new view is in the page but before it is painted, so the visitor never sees the
+  // old scroll position against the new (often much shorter) list. The heading above the catalogue
+  // can change height with the category, which is why the position is measured here, not on click.
+  const shownKey = useRef(key);
+  const settle = useRef<HTMLElement | null>(null); // a target below the list, re-aligned once the list has loaded
+  useLayoutEffect(() => {
+    if (shownKey.current !== key) {
+      shownKey.current = key;
+      const own = ownMove.current;
+      const viaHistory = historyUrl.current === window.location.pathname + window.location.search;
+      ownMove.current = null;
+      historyUrl.current = null;
+      settle.current = null;
+      if (own) {
+        if (own !== "none") reveal(own === "top" ? topRef.current : resultsRef.current);
+      } else if (!viaHistory) {
+        // A link outside the catalogue changed the view (Back / Forward is left to the browser, which
+        // puts the visitor back where they were). The router sees the same page, so it does not
+        // scroll; without this the visitor stays mid-page while the content changes under them.
+        const id = decodeURIComponent(window.location.hash.slice(1));
+        const target = id ? document.getElementById(id) : null;
+        if (target) target.scrollIntoView({ behavior: "instant", block: "start" });
+        else window.scrollTo({ top: 0, behavior: "instant" });
+        settle.current = target;
+      }
+    }
+    if (data.key === key && settle.current) {
+      settle.current.scrollIntoView({ behavior: "instant", block: "start" });
+      settle.current = null;
+    }
+  }, [key, data.key]);
 
   const go = (next: CatalogueView, opts: { replace?: boolean; reveal?: "top" | "results" | "none" } = {}) => {
     const url = catalogueUrl(next);
     if (url === window.location.pathname + window.location.search) return;
-    const where = opts.reveal ?? "top";
-    pendingReveal.current = where === "none" ? null : where;
+    ownMove.current = opts.reveal ?? "top";
     setFailedKey(null);
     if (opts.replace) window.history.replaceState(null, "", url);
     else window.history.pushState(null, "", url);
@@ -161,7 +196,7 @@ export function CatalogueClient({
         <CatalogueSidebar categories={categories} activeId={current?.id} total={totalAll} onSelect={selectCategory} />
       </aside>
 
-      <div ref={topRef} className="min-w-0 scroll-mt-28">
+      <div ref={topRef} className="min-w-0 scroll-mt-24">
         <form
           role="search"
           action={catalogueUrl({ categoryPath: view.categoryPath, q: "", page: 1 })}
@@ -187,7 +222,7 @@ export function CatalogueClient({
               onChange={(e) => setTerm(e.target.value)}
               maxLength={80}
               autoComplete="off"
-              placeholder={current ? `Search in ${current.name}…` : "Search products, e.g. desiccant, VCI film, pallets…"}
+              placeholder={current ? `Search in ${current.name}…` : "Search products, e.g. pallets, crates, VCI film…"}
               className="field !pl-11 !pr-12"
             />
             {term && (

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, MapPin, Menu, Phone, X } from "lucide-react";
+import { isPlainClick } from "@/lib/catalogue/shared";
 import { nav, site } from "@/lib/site";
 import { Logo } from "./Logo";
 import { WhatsAppIcon } from "./Icon";
@@ -33,6 +34,10 @@ export function Header() {
   }, [open]);
 
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+  /** The link for the page you are already on takes you back to its top (the router leaves the scroll alone). */
+  const toTop = (e: React.MouseEvent, href: string) => {
+    if (href === pathname && isPlainClick(e)) window.scrollTo({ top: 0 });
+  };
 
   return (
     <>
@@ -65,7 +70,7 @@ export function Header() {
           }`}
         >
           <div className="container-x flex h-[68px] items-center justify-between gap-6 lg:h-[76px]">
-            <Link href="/" aria-label="RAD Packing Solutions, home" className="shrink-0">
+            <Link href="/" aria-label="RAD Packing Solutions, home" onClick={(e) => toTop(e, "/")} className="shrink-0">
               <Logo uid="hdr" tone={scrolled ? "dark" : "light"} />
             </Link>
 
@@ -74,6 +79,7 @@ export function Header() {
                 <Link
                   key={n.href}
                   href={n.href}
+                  onClick={(e) => toTop(e, n.href)}
                   aria-current={isActive(n.href) ? "page" : undefined}
                   className={`relative whitespace-nowrap rounded-full px-4 py-2 text-[15px] font-semibold transition ${
                     scrolled ? "text-text hover:bg-brand-50" : "text-white/90 hover:bg-white/10"
@@ -125,7 +131,10 @@ export function Header() {
                 key={n.href}
                 href={n.href}
                 tabIndex={open ? 0 : -1}
-                onClick={() => setOpen(false)}
+                onClick={(e) => {
+                  setOpen(false);
+                  toTop(e, n.href);
+                }}
                 style={{ transitionDelay: open ? `${80 + i * 50}ms` : "0ms" }}
                 className={`flex items-center justify-between border-b border-white/10 py-5 font-display text-[28px] font-bold transition-all duration-500 ${
                   open ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
@@ -137,7 +146,7 @@ export function Header() {
           </nav>
 
           <div className="mt-auto grid gap-3">
-            <Link href="/products#quote" tabIndex={open ? 0 : -1} className="btn btn-accent w-full">
+            <Link href="/products#quote" tabIndex={open ? 0 : -1} onClick={() => setOpen(false)} className="btn btn-accent w-full">
               Get a Quote <ArrowRight size={18} />
             </Link>
             <div className="grid grid-cols-2 gap-3">
