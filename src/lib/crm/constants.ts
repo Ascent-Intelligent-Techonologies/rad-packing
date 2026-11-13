@@ -105,6 +105,23 @@ export const ROLES: (Opt & { description: string })[] = [
 
 /** The five product lines, for tagging enquiries and the price list. */
 export const PRODUCT_LINES = products.map((p) => ({ id: p.slug, label: p.title }));
+/**
+ * Lines the website offered before it followed the company profile. Enquiries and price-list items
+ * saved back then still carry these ids, so they keep a readable name and stay valid on save.
+ */
+export const LEGACY_PRODUCT_LINES = [
+  { id: "nailless-boxes", label: "Nail-Less Collapsible Boxes (old line)" },
+  { id: "wooden", label: "Wooden Packaging (old line)" },
+  { id: "traditional", label: "Traditional Packaging (old line)" },
+  { id: "turnkey", label: "Turnkey Contracting (old line)" },
+];
+export const ALL_PRODUCT_LINES = [...PRODUCT_LINES, ...LEGACY_PRODUCT_LINES];
+export const productLineLabel = (id: string) => ALL_PRODUCT_LINES.find((p) => p.id === id)?.label ?? id;
+/** The lines to offer in a picker: the current five, plus any old line the record already has. */
+export const productLineOptions = (current: (string | null | undefined)[] = []) => [
+  ...PRODUCT_LINES,
+  ...LEGACY_PRODUCT_LINES.filter((l) => current.includes(l.id)),
+];
 export const INDUSTRIES = industries.map((i) => i.title);
 
 export const UNITS = ["pcs", "set", "m", "m²", "m³", "kg", "roll", "box", "crate", "pallet", "job", "day", "hour"];

@@ -29,7 +29,7 @@ const intents: Intent[] = [
     test: /\b(quote|quotation|price|pricing|cost|how much|rate|estimate|budget)\b/,
     reply: {
       message:
-        "Pricing depends on the asset, volume, materials and destination, so our team prepares each quote individually 🧾 Tell us what you're shipping or storing and they'll come back shortly.",
+        "Pricing depends on the goods, volume, materials and destination, so our team prepares each quote individually 🧾 Tell us what you're shipping or storing and they'll come back shortly.",
       links: [L("/products#quote")],
       suggestions: ["What products do you offer?", "Tell me about onsite packing"],
       showLeadForm: true,
@@ -39,48 +39,68 @@ const intents: Intent[] = [
     test: /\b(tailor|tailored|custom|customi[sz]ed|specific|special|bespoke|unique|my (equipment|machine|machinery|project|cargo))\b/,
     reply: {
       message:
-        "Every asset is different, so we engineer solutions around yours 🛡️ I've opened a short form. Share what you need protected and a RAD specialist will recommend the right approach.",
+        "Every job is different, so we customize the packaging to your goods 🛡️ I've opened a short form. Share what you need protected and our team will recommend the right approach.",
       links: [L("/products#quote")],
       suggestions: ["Tell me about onsite packing", "How do I protect machinery for sea shipping?"],
       showLeadForm: true,
     },
   },
   {
-    test: /\b(on ?-?site|mobile|at (our|my) (site|facility|factory|plant|workshop|port)|come to|your team come|travel)\b/,
+    test: /\b(on ?-?site|off ?-?site|mobile|at (our|my|your) (site|facility|factory|plant|workshop|port|premises)|come to|your team come|travel)\b/,
     reply: {
       message:
-        "Yes! Our **onsite & mobile packing** teams come directly to your **facility, workshop or port** to preserve machinery on location 🚚 No need to move equipment before it's protected.",
-      links: [L("/products/category/turnkey"), L("/products"), L("/contact")],
+        "Yes! We offer both **on-site and off-site packaging** 🚚 Our team can pack at your **facility, workshop or port**, or we can pack your goods at our own premises.",
+      links: [L("/products/category/industrial-packaging/on-site-off-site-packaging"), L("/contact")],
       suggestions: ["I want to contact you", "I need a tailored solution"],
       showLeadForm: false,
     },
   },
   {
-    test: /\b(sea|ocean|marine|maritime|vessel|container|freight|shipping|ship|transit|salt|export|overseas|international)\b/,
+    test: /\b(pallets?|euro|epal|skids?|recycl\w*|pooling|rental|rent)\b/,
     reply: {
       message:
-        "For sea shipping we use **heavy-duty barrier bags**, **desiccant integration** and **vacuum-sealed crating** against moisture, corrosion and salt air 🚢 We add **VCI films**, **wooden packaging** and custom protective packaging for rough ocean freight and long transit.",
-      links: [L("/products"), L("/products/category/preservation"), L("/products/category/wooden")],
+        "We supply **standard and custom-made wooden pallets**, **Euro and CP pallets**, both **new and used**, and offer **pallet recycling, pooling and rental** ♻️ We also build **heavy-duty skids** for machinery and heavy loads.",
+      links: [L("/products/category/wooden-pallets"), L("/products/category/industrial-packaging"), L("/products#quote")],
+      suggestions: ["I want a quote", "Do you do shrink wrapping?", "I want to contact you"],
+      showLeadForm: false,
+    },
+  },
+  {
+    test: /\b(shrink\w*|heat[- ]shrink|uv|weather\w*|dust)\b/,
+    reply: {
+      message:
+        "Our **industrial heat shrink wrapping** covers machinery, equipment and materials in a tight wrap that protects against **weather and UV**, **dust and moisture** 🌦️ It suits transport as well as outdoor storage.",
+      links: [L("/products/category/heat-shrink-wrapping"), L("/products#quote")],
+      suggestions: ["Tell me about onsite packing", "I want to contact you"],
+      showLeadForm: false,
+    },
+  },
+  {
+    test: /\b(sea|ocean|marine|maritime|vessel|container|freight|shipping|ship|transit|salt|export|overseas|international|ispm|heat[- ]treated)\b/,
+    reply: {
+      message:
+        "For export we supply **ISPM-15 heat-treated**, **export-ready wooden packaging** (crates, boxes, pallets and skids) 🚢 Inside, **VCI, vacuum and moisture barrier packaging** protect the goods through **international transit**.",
+      links: [L("/products/category/export-packaging"), L("/products/category/preservation"), L("/products#quote")],
       suggestions: ["I want to contact you", "Tell me about onsite packing", "I need a tailored solution"],
       showLeadForm: false,
     },
   },
   {
-    test: /\b(vci|rust|corrosion|corrode|barrier|desiccant|moisture|humid|humidity|preserv\w*|storage|oxidation|foil|film|vapou?r)\b/,
+    test: /\b(vci|rust|corrosion|corrode|barrier|desiccant|moisture|humid|humidity|preserv\w*|storage|oxidation|foil|film|vacuum|vapou?r)\b/,
     reply: {
       message:
-        "Our **preservation packing** combines **VCI (Volatile Corrosion Inhibitor) films**, **high-barrier foils** and **desiccants** to stop rust and moisture damage before it starts 🛡️ VCI shields bare metal without greasy coatings, ideal for long-term storage and transit.",
+        "Our **preservation packaging** covers **VCI packaging**, **vacuum packaging** and **moisture barrier packaging** for **corrosion protection** 🛡️ VCI protects bare metal without greasy coatings, in storage and in transit.",
       links: [L("/products/category/preservation"), L("/about")],
       suggestions: ["How do I protect machinery for sea shipping?", "I need a tailored solution", "I want to contact you"],
       showLeadForm: false,
     },
   },
   {
-    test: /\b(wood|wooden|crate|crates|crating|plywood|pallet|pallets|timber|box|boxes|nail|nailless|ispm|collapsible|case|cases)\b/,
+    test: /\b(wood|wooden|crate|crates|crating|plywood|timber|box|boxes|case|cases)\b/,
     reply: {
       message:
-        "We build **export crates**, **plywood boxes**, **timber cases** and **industrial pallets** to export standards 📦 Our **nail-less collapsible boxes** use E1-grade plywood (6, 9 or 12 mm) with galvanized steel strips, hinges and buckles. Eco-conscious options comply with regulations like **ISPM 15**.",
-      links: [L("/products/category/nailless-boxes"), L("/products/category/wooden"), L("/products#quote")],
+        "We build **wooden crates and boxes** to the size of your cargo, along with **heavy-duty skids** and **custom industrial packaging** 📦 For export they can be made **ISPM-15 heat-treated**.",
+      links: [L("/products/category/industrial-packaging"), L("/products/category/export-packaging"), L("/products#quote")],
       suggestions: ["I want to contact you", "Tell me about onsite packing"],
       showLeadForm: false,
     },
@@ -89,19 +109,19 @@ const intents: Intent[] = [
     test: /\b(turnkey|end[- ]to[- ]end|full service|complete|contracting|assessment|export prep\w*)\b/,
     reply: {
       message:
-        "Our **turnkey contracting** covers everything: **site assessment**, planning, **material supply**, **on-site packing and preservation**, crating and **export preparation** ✅ One accountable partner from start to shipment-ready.",
-      links: [L("/products/category/turnkey"), L("/products#quote")],
+        "We can take on the whole job: **assessment**, **materials**, **on-site or off-site packing**, **preservation**, **crating** and **export preparation** ✅",
+      links: [L("/products/category/industrial-packaging/on-site-off-site-packaging"), L("/products#quote")],
       suggestions: ["I want to contact you", "How do I protect machinery for sea shipping?"],
       showLeadForm: false,
     },
   },
   {
-    test: /\b(electronic\w*|esd|static|circuit|pharma\w*|healthcare|medical|drug|aerospace|aviation|aircraft|jet|automotive|engineering|industr(y|ies)|sector|machinery|equipment|gearbox)\b/,
+    test: /\b(machinery|machines?|equipment|industrial goods|goods|materials?)\b/,
     reply: {
       message:
-        "We protect assets across **aerospace, automotive & engineering**, **heavy machinery**, **electronics** (ESD shielding), **pharmaceuticals & healthcare** and **shipping & maritime** ✅ Tell me your industry and I'll point you to the right solution.",
-      links: [L("/products"), L("/about")],
-      suggestions: ["How do I protect machinery for sea shipping?", "I need a tailored solution", "I want to contact you"],
+        "We protect **industrial goods, machinery and materials** during transportation and storage, with pallets, crates, skids, shrink wrapping and preservation packaging ✅ Tell me what you're moving and I'll point you to the right solution.",
+      links: [L("/products"), L("/products#quote")],
+      suggestions: ["Help me choose a solution", "I need a tailored solution", "I want to contact you"],
       showLeadForm: false,
     },
   },
@@ -109,16 +129,16 @@ const intents: Intent[] = [
     test: /\b(product|products|range|offer|offers|sell|supply|solutions?|services?|what do you (do|have))\b/,
     reply: {
       message:
-        "We offer **preservation packing**, **nail-less collapsible boxes**, **wooden packaging**, **traditional packaging** and **industrial packing turnkey contracting** 📦 Plus **onsite & mobile packing** teams that work at your facility or port.",
+        "We offer **wooden pallets**, **industrial packaging** (crates, boxes and heavy-duty skids), **heat shrink wrapping**, **preservation & VCI packaging** and **export packaging solutions** 📦 We pack **on-site or off-site**.",
       links: [L("/products"), L("/products#quote"), L("/about")],
-      suggestions: ["Tell me about onsite packing", "I need a tailored solution", "I want to contact you"],
+      suggestions: ["What pallets do you supply?", "Tell me about onsite packing", "I want to contact you"],
       showLeadForm: false,
     },
   },
   {
-    test: /\b(about (you|rad|the company)|who are you|who is rad|company|experience|years|history|where are you|where (is|are) (rad|you)|location|located|sharjah|address|office)\b/,
+    test: /\b(about (you|rad|the company)|who are you|who is rad|company|history|where are you|where (is|are) (rad|you)|where do you|location|located|sharjah|address|office|uae|gcc|deliver\w*|serve)\b/,
     reply: {
-      message: `RAD Packing Solutions is a specialist in **industrial packaging and preservation** with **over 25 years** of expertise, based in **${site.location}** 🏭 We protect valuable assets from corrosion, moisture and environmental damage during storage, handling and transport.`,
+      message: `${site.legalName} is a **Sharjah-based industrial packaging company** providing reliable and customized packaging solutions across **${site.serviceArea}** 🏭 We specialize in wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping and preservation packaging.`,
       links: [L("/about"), L("/products"), L("/contact")],
       suggestions: ["What products do you offer?", "I want to contact you"],
       showLeadForm: false,
@@ -137,9 +157,9 @@ const intents: Intent[] = [
     test: /\b(hi|hello|hey|salam|salaam|marhaba|good (morning|afternoon|evening)|assalam\w*)\b/,
     reply: {
       message:
-        "Hello! 👋 I can help with **preservation packaging**, **export crates**, **onsite packing** and more. What would you like to protect or ship?",
+        "Hello! 👋 I can help with **wooden pallets**, **crates and skids**, **shrink wrapping**, **preservation packaging** and **export packing**. What would you like to move or store?",
       links: [L("/products")],
-      suggestions: ["How do I protect machinery for sea shipping?", "Tell me about onsite packing", "I want to contact you"],
+      suggestions: ["What pallets do you supply?", "Tell me about onsite packing", "I want to contact you"],
       showLeadForm: false,
     },
   },
@@ -148,54 +168,44 @@ const intents: Intent[] = [
 
 /* ------------------------------------------------------------------ */
 /* Guided flow: "Help me choose a solution"                            */
-/* asset type → how it travels / is stored → a specific recommendation */
+/* what it is → how it travels / is stored → a specific recommendation */
+/* Every recommendation uses only what RAD's company profile lists.    */
 /* ------------------------------------------------------------------ */
 
 type Asset = { id: string; label: string; test: RegExp };
 const assets: Asset[] = [
-  { id: "machinery", label: "machinery & heavy equipment", test: /\b(machinery|heavy equipment|gearbox\w*|turbine\w*|generator\w*|pump\w*|compressor\w*|equipment)\b/ },
-  { id: "electronics", label: "electronics & circuit boards", test: /\b(electronic\w*|circuit\w*|esd|pcb|controls?|automation)\b/ },
-  { id: "aerospace", label: "aerospace & automotive parts", test: /\b(aerospace|aviation|aircraft|jet|avionics|automotive|engine parts?|landing gear)\b/ },
-  { id: "pharma", label: "pharma & healthcare products", test: /\b(pharma\w*|healthcare|medical|drugs?|diagnostics?)\b/ },
+  { id: "machinery", label: "machinery & heavy equipment", test: /\b(machinery|machines?|heavy equipment|gearbox\w*|turbine\w*|generator\w*|pump\w*|compressor\w*|equipment)\b/ },
+  { id: "parts", label: "metal parts & components", test: /\b(metal|spare parts?|spares|components?|bearings?|fasteners?)\b/ },
+  { id: "goods", label: "palletised goods & materials", test: /\b(palleti[sz]ed|goods|cartons?|drums?|sacks?)\b/ },
 ];
 const modes = [
-  { id: "sea", label: "sea freight", test: /\b(sea|ocean|marine|vessel|container|sea freight)\b/ },
-  { id: "air", label: "air freight", test: /\b(air|air freight|airfreight|flight)\b/ },
+  { id: "export", label: "export or sea freight", test: /\b(sea|ocean|marine|vessel|container|export|overseas|international|air|freight)\b/ },
   { id: "storage", label: "long-term storage", test: /\b(storage|store|stored|warehouse|outdoor|mothball\w*)\b/ },
   { id: "local", label: "local transport", test: /\b(local|road|truck|domestic|trucking)\b/ },
 ];
 
 const parts: Record<string, Record<string, string>> = {
   machinery: {
-    sea: "**VCI films** and **vacuum-sealed barrier bags** with **desiccants**, inside an **export crate** built to export standards (ISPM 15 options)",
-    air: "**VCI films** with **desiccant integration** and a light, strong **plywood box** to keep weight down",
-    storage: "**heavy-duty VCI films**, **vacuum-sealed crating** and **desiccants** for long-term outdoor or warehouse storage",
-    local: "**VCI wrapping** with **corrugated or plywood protection**, **pallets** and **strapping** for load stability",
+    export: "**VCI and vacuum packaging** behind a **moisture barrier**, inside an **ISPM-15 heat-treated export crate** on a **heavy-duty skid**",
+    storage: "**industrial heat shrink wrapping** for weather, UV, dust and moisture protection, with **VCI packaging** underneath for corrosion protection",
+    local: "a **heavy-duty skid** or **wooden crate** sized to the machine, with **shrink wrapping** to keep dust and moisture off",
   },
-  electronics: {
-    sea: "**ESD shielding** with **vapor-barrier films** and **desiccants**, in a cushioned **plywood box**",
-    air: "**ESD barrier pouches** with **desiccants** and **protective foam** inside a strong outer carton",
-    storage: "**ESD shielding** with **high-barrier foil bags** and **desiccants** to stop micro-corrosion and dust",
-    local: "**ESD-safe barrier pouches** with **protective foam** and **corrugated cartons**",
+  parts: {
+    export: "**VCI packaging** with **vacuum or moisture barrier packaging**, packed in an **ISPM-15 heat-treated wooden box**",
+    storage: "**VCI packaging** behind a **moisture barrier** for corrosion protection in storage",
+    local: "**VCI packaging** in a **wooden box** on a **pallet**",
   },
-  aerospace: {
-    sea: "**high-barrier foil bags**, **custom 3D liners** and **specialized desiccants**, inside an **export crate**",
-    air: "**high-barrier foil bags** and **custom 3D liners** with **specialized desiccants** to handle pressure and humidity shifts",
-    storage: "**high-barrier foil bags**, **3D liners** and **desiccants** for long-term preservation",
-    local: "**custom 3D liners** with **barrier foil** and **protective foam**",
-  },
-  pharma: {
-    sea: "**cleanroom-compatible barrier pouches** and **temperature-stable packaging** in a protective outer case",
-    air: "**cleanroom-compatible barrier pouches** with **temperature-stable packaging** that protect against light, oxygen and moisture",
-    storage: "**cleanroom-compatible barrier pouches** that maintain sterile barriers against light, oxygen and moisture",
-    local: "**barrier pouches** with **temperature-stable packaging** and **corrugated cartons**",
+  goods: {
+    export: "**ISPM-15 heat-treated pallets** (standard, Euro or CP) with **shrink wrapping** for transit protection",
+    storage: "**wooden pallets** with **heat shrink wrapping** against dust and moisture",
+    local: "**standard or custom-made wooden pallets**, new or used, with **pallet pooling or rental** if the flow is regular",
   },
 };
 
 const assetQuestion: ChatReply = {
-  message: "Happy to help you choose 🛡️ **What are you protecting?**",
+  message: "Happy to help you choose 🛡️ **What do you need to pack?**",
   links: [],
-  suggestions: ["Machinery & heavy equipment", "Electronics & circuit boards", "Aerospace & automotive parts", "Pharma & healthcare products"],
+  suggestions: ["Machinery & heavy equipment", "Metal parts & components", "Palletised goods & materials"],
   showLeadForm: false,
 };
 
@@ -203,15 +213,15 @@ function modeQuestion(assetLabel: string): ChatReply {
   return {
     message: `Got it: **${assetLabel}**. **How will it travel or be stored?**`,
     links: [],
-    suggestions: ["Sea freight", "Air freight", "Long-term storage", "Local transport"],
+    suggestions: ["Export or sea freight", "Long-term storage", "Local transport"],
     showLeadForm: false,
   };
 }
 
 function recommendation(asset: Asset, mode: (typeof modes)[number]): ChatReply {
   return {
-    message: `For **${asset.label}** going by **${mode.label}**, we'd recommend ${parts[asset.id][mode.id]} ✅ Our team will tailor the exact specification to your asset.`,
-    links: [L("/products/category/preservation"), L("/products#quote")],
+    message: `For **${asset.label}** and **${mode.label}**, we'd recommend ${parts[asset.id][mode.id]} ✅ Our team will confirm the exact specification for your goods.`,
+    links: [L("/products"), L("/products#quote")],
     suggestions: ["I need a tailored solution", "Tell me about onsite packing", "I want to contact you"],
     showLeadForm: false,
   };

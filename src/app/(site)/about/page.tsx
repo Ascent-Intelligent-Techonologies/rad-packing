@@ -1,32 +1,33 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Droplets, Ruler, ShieldCheck } from "lucide-react";
+import { ArrowRight, Droplets, PackageCheck, ShieldCheck } from "lucide-react";
 import { OpenChatButton } from "@/components/OpenChatButton";
 import { PageHero } from "@/components/PageHero";
 import { Reveal } from "@/components/Reveal";
-import { industries, whyRad } from "@/lib/site";
+import { ProductGlyph } from "@/components/Icon";
+import { products, site, whyRad } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
   description:
-    "RAD Packing Solutions engineers industrial-grade, high-barrier preservation packaging that stops degradation before it starts.",
+    "RAD Packing Solutions L.L.C is a Sharjah-based industrial packaging company serving the UAE and GCC: wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping and preservation packaging.",
 };
 
 const pillars = [
   {
-    icon: Droplets,
-    title: "Advanced Barrier Foils & Films",
-    body: "Moisture-vapor and gas-tight shielding that locks out humidity and contaminants.",
-  },
-  {
     icon: ShieldCheck,
-    title: "VCI (Volatile Corrosion Inhibitor) Technology",
-    body: "Active molecular protection that shields bare metals from rust without greasy coatings.",
+    title: "VCI Packaging Solutions",
+    body: "Volatile corrosion inhibitor (VCI) packaging that protects bare metal from rust without greasy coatings.",
   },
   {
-    icon: Ruler,
-    title: "Custom Engineered Crates & 3D Liners",
-    body: "Tailor-fitted packaging built to absorb shock, prevent movement and withstand extreme supply-chain conditions.",
+    icon: PackageCheck,
+    title: "Vacuum Packaging",
+    body: "Goods sealed in barrier material with the air drawn out, for long storage and long journeys.",
+  },
+  {
+    icon: Droplets,
+    title: "Moisture Barrier Packaging",
+    body: "Barrier materials that keep humidity and dust away from machinery, equipment and components.",
   },
 ];
 
@@ -35,10 +36,47 @@ export default function About() {
     <>
       <PageHero eyebrow="About RAD Packing" title={<>Delivered in the <span className="text-gradient">exact condition</span> it left your facility.</>}>
         <p>
-          At RAD Packaging Solutions we specialize in industrial-grade and high-barrier preservation packaging engineered
-          to stop degradation before it starts.
+          {site.legalName} is a Sharjah-based industrial packaging company providing reliable and customized packaging
+          solutions across {site.serviceArea}.
         </p>
       </PageHero>
+
+      <section className="section !pb-0">
+        <div className="container-x grid gap-14 lg:grid-cols-2 lg:gap-20">
+          <Reveal>
+            <span className="eyebrow">Who we are</span>
+            <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
+              Quality, durability and packaging made to fit.
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-muted">
+              We specialize in wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping and
+              preservation packaging. Our focus is on delivering quality, durability and customized solutions to
+              protect industrial goods, machinery and materials during transportation and storage.
+            </p>
+          </Reveal>
+          <Reveal delay={100}>
+            <ul className="grid gap-3">
+              {products.map((p) => (
+                <li key={p.slug}>
+                  <Link
+                    href={`/products/category/${p.slug}`}
+                    className="card card-hover group flex items-center gap-4 p-4 sm:p-5"
+                  >
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand">
+                      <ProductGlyph name={p.icon} size={22} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-display text-lg font-bold leading-snug">{p.title}</span>
+                      <span className="mt-0.5 block text-sm leading-relaxed text-muted">{p.highlights.join(" · ")}</span>
+                    </span>
+                    <ArrowRight size={18} className="shrink-0 text-brand transition group-hover:translate-x-1" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        </div>
+      </section>
 
       <section className="section">
         <div className="container-x grid gap-14 lg:grid-cols-2 lg:gap-20">
@@ -50,13 +88,12 @@ export default function About() {
           </Reveal>
           <Reveal delay={100}>
             <p className="text-lg leading-relaxed text-muted">
-              Whether you are safeguarding sensitive electronics, critical machinery, aerospace components or perishable
-              goods, our mission is simple: deliver your product in the exact condition it left your facility.
+              Whether you are protecting machinery, equipment, components or materials, our aim is simple: deliver
+              your goods in the exact condition they left your facility.
             </p>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              Without the right environmental controls, moisture, oxygen and static discharge can destroy high-value
-              assets during transit or long-term storage. We bridge the gap between heavy-duty logistics and scientific
-              preservation.
+              Without the right protection, moisture and corrosion can damage valuable goods during transit or
+              long-term storage. VCI, vacuum and moisture barrier packaging keep them out.
             </p>
           </Reveal>
         </div>
@@ -79,23 +116,14 @@ export default function About() {
       <section className="section bg-white">
         <div className="container-x grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-20">
           <Reveal>
-            <span className="eyebrow">Our promise</span>
+            <span className="eyebrow">Our commitment</span>
             <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
-              From turbines to microelectronics, we remove the risk.
+              Dependable, cost-effective and customized.
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted">
-              When standard packaging isn&apos;t enough to withstand time, humidity and volatile transit conditions, our
-              scientific shielding solutions ensure your products arrive, or remain in storage, in exact factory
-              condition. From massive heavy industrial turbines to static-sensitive microelectronics, we eliminate the
-              risks of corrosion, moisture degradation and environmental decay.
+              We are committed to providing dependable, cost-effective and customized packaging solutions that meet our
+              clients&apos; industrial and export requirements.
             </p>
-            <ul className="mt-8 flex flex-wrap gap-2">
-              {industries.map((i) => (
-                <li key={i.id} className="rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold">
-                  {i.short.split(" · ")[0].split(" & ")[0]}
-                </li>
-              ))}
-            </ul>
           </Reveal>
           <Reveal delay={100} className="grid gap-4 sm:grid-cols-2">
             {whyRad.map((w) => (
@@ -118,12 +146,11 @@ export default function About() {
               <div className="relative max-w-2xl">
                 <span className="eyebrow">Partner with us</span>
                 <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
-                  Need a preservation expert to support you?
+                  Need a packaging partner?
                 </h2>
                 <p className="mt-5 text-lg leading-relaxed text-white/70">
-                  Whether you are shipping sensitive electronic components across the globe or mothballing heavy
-                  machinery for multi-year storage, RAD Packing Solutions turns environmental vulnerability into total
-                  logistical certainty.
+                  Whether you need pallets every week, a crate for one machine or a full export packing job, tell
+                  us what you are moving or storing and we will recommend the right solution.
                 </p>
                 <div className="mt-9 flex flex-wrap gap-3">
                   <Link href="/products#quote" className="btn btn-accent">

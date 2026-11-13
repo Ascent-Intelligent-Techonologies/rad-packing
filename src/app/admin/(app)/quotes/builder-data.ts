@@ -1,4 +1,4 @@
-import { PRODUCT_LINES } from "@/lib/crm/constants";
+import { ALL_PRODUCT_LINES } from "@/lib/crm/constants";
 import { getDb } from "@/lib/db";
 import type { FormContact, FormProduct } from "./QuoteForm";
 
@@ -42,6 +42,6 @@ export async function loadBuilderData(ensure: { companyId?: string | null; conta
     companies,
     contacts: contactList,
     products: products satisfies FormProduct[],
-    categories: PRODUCT_LINES,
+    categories: ALL_PRODUCT_LINES,
   };
 }

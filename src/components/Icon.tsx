@@ -5,6 +5,7 @@ import {
   Package,
   ShieldCheck,
   Truck,
+  Umbrella,
   Wrench,
   type LucideProps,
 } from "lucide-react";
@@ -18,6 +19,7 @@ const map = {
   leaf: Leaf,
   wrench: Wrench,
   package: Package,
+  wrap: Umbrella,
 } as const;
 
 export function ProductGlyph({ name, ...props }: { name: ProductIcon } & LucideProps) {

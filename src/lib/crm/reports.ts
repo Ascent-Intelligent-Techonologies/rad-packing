@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db";
-import { PRODUCT_LINES, SOURCES, STAGES, label } from "./constants";
+import { SOURCES, STAGES, label, productLineLabel } from "./constants";
 
 export const RANGES = [
   { id: "30", label: "Last 30 days", days: 30 },
@@ -160,7 +160,7 @@ export async function buildReport(range: RangeId, now: Date): Promise<Report> {
   const products = groupBy(
     created.filter((l) => l.products.length > 0),
     (l) => [...new Set(l.products)],
-    (k) => PRODUCT_LINES.find((p) => p.id === k)?.label ?? k,
+    productLineLabel,
     isWon,
     val,
   );

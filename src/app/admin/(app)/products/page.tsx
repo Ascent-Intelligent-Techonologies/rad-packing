@@ -4,7 +4,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { ActionForm, ConfirmButton, SubmitButton } from "@/components/crm/forms";
 import { Badge, EmptyState, PageHeader, Panel, TableWrap } from "@/components/crm/ui";
 import { requireUser } from "@/lib/crm/auth";
-import { PRODUCT_LINES } from "@/lib/crm/constants";
+import { PRODUCT_LINES, productLineLabel } from "@/lib/crm/constants";
 import { aed } from "@/lib/crm/format";
 import { can } from "@/lib/crm/permissions";
 import { getDb } from "@/lib/db";
@@ -166,7 +166,7 @@ export default async function ProductsPage(props: PageProps<"/admin/products">) 
               filtered
                 ? "Try a different search or clear the filters."
                 : canEdit
-                  ? 'Add products one by one, or use "Add the five product lines" to start from the services on the website.'
+                  ? 'Add products one by one, or use "Add the five product lines" to start from the product lines on the website.'
                   : "A manager can add products to the price list."
             }
             action={canEdit && !filtered ? <SeedLines /> : undefined}
@@ -192,7 +192,7 @@ export default async function ProductsPage(props: PageProps<"/admin/products">) 
                     {p.description && <p className="mt-0.5 line-clamp-1 text-xs text-muted">{p.description}</p>}
                   </td>
                   <td className="whitespace-nowrap text-muted">{p.sku ?? "–"}</td>
-                  <td className="min-w-[160px] text-muted">{p.category ? (PRODUCT_LINES.find((l) => l.id === p.category)?.label ?? p.category) : "–"}</td>
+                  <td className="min-w-[160px] text-muted">{p.category ? productLineLabel(p.category) : "–"}</td>
                   <td className="whitespace-nowrap">{p.unit}</td>
                   <td className="whitespace-nowrap text-right font-semibold tabular-nums">
                     {p.unitPriceFils === 0 ? <span className="font-medium text-muted">Not set</span> : aed(p.unitPriceFils)}

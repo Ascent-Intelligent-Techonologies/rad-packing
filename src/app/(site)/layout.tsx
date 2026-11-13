@@ -12,8 +12,9 @@ const jsonLd = {
   url: site.url,
   telephone: site.phones.map((p) => p.tel),
   address: { "@type": "PostalAddress", addressLocality: "Sharjah", addressCountry: "AE" },
+  areaServed: ["United Arab Emirates", "Gulf Cooperation Council"],
   description:
-    "Specialist in industrial packaging and preservation solutions: VCI, barrier packaging, export crates and onsite packing.",
+    "Sharjah-based industrial packaging company: wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping, preservation and export packaging across the UAE and GCC.",
 };
 
 export default function SiteLayout({ children }: LayoutProps<"/">) {

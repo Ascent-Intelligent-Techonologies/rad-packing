@@ -7,12 +7,13 @@ Modern, mobile-first rebuild of [radpacking.com](https://www.radpacking.com) wit
 ## What's inside
 
 ### Public website (`/`)
-- Home, About, Products & Solutions, Contact, Privacy Policy, Accessibility Statement. All copy comes from the current site.
+- Home, About, Products & Solutions, Contact, Privacy Policy, Accessibility Statement. Company facts and the five product lines (Wooden Pallets, Industrial Packaging, Heat Shrink Wrapping, Preservation & VCI Packaging, Export Packaging Solutions) follow RAD's company profile; they live in `src/lib/site.ts`. Claims the profile does not make (years in business, industry lists) are deliberately left out.
 - **Product catalogue** (`/products`): category → sub-category → product hierarchy with a category sidebar, live search, paged product grid, category pages (`/products/category/<path>`), and product pages with photo gallery, features, specifications and a pre-filled quote form.
   - Choosing a category, searching and paging update only the product area (no page reload); the address bar still changes, so views can be shared and Back works. It also works without JavaScript.
   - Search is word based (any order, singular or plural, title matches first) and looks in titles, tags, categories and descriptions. See `searchCatalogue` in `src/lib/catalogue/public.ts`.
   - Products without a photo show an original illustration picked from the product type (`src/components/catalogue/ProductArt.tsx`) until staff upload a real photo.
-  - 14 starter products carry a representative photo from Wikimedia Commons (public domain or Creative Commons). The files and their sources are in `prisma/seed/catalogue-photos` (see `CREDITS.md` there). Credited photos show a credit line under the picture and are listed on `/photo-credits`. `scripts/seed-catalogue-photos.mjs` loads them once per database during the Vercel build (`npm run db:seed-photos` locally); photos that staff later replace or delete are never put back.
+  - The catalogue holds only what the company profile lists (see migration `20261113190000_company_profile_catalogue`). Old category and product addresses redirect (`next.config.ts`).
+  - 6 products carry a representative photo from Wikimedia Commons (public domain or Creative Commons). The files and their sources are in `prisma/seed/catalogue-photos` (see `CREDITS.md` there). Credited photos show a credit line under the picture and are listed on `/photo-credits`. `scripts/seed-catalogue-photos.mjs` loads them once per database during the Vercel build (`npm run db:seed-photos` locally); photos that staff later replace or delete are never put back.
   - Everything is managed from the admin (see *Website catalogue* below), cached, and refreshed the moment staff save a change.
 - Header with both phone numbers, location bar, mobile menu, and a thumb-reach **Call / WhatsApp / Quote** bar on phones.
 - Full-bleed looping "packaging line" hero (drop a real clip at `public/media/hero.mp4` and it fades in over the animation).
@@ -34,7 +35,7 @@ Email + password staff login (server-side, revocable sessions; scrypt-hashed pas
 | Price list | Internal product & service prices used in quotes |
 | AI chats | Read-only log of website chat conversations (what customers ask) |
 | Reports | Funnel, sources, industries, products, win rate, leaderboard, CSV exports |
-| Team / Settings | Staff accounts and roles; company profile, VAT, quote terms; demo-data loader |
+| Team / Settings | Staff accounts and roles; company profile, VAT, quote terms |
 
 **Roles:** `admin` · `manager` · `sales` · `ops` · `viewer` (see `src/lib/crm/permissions.ts`).
 
@@ -48,7 +49,7 @@ npx prisma migrate deploy
 npm run dev             # http://localhost:3000
 ```
 
-Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`. The first sign-in creates the Administrator account (only while there are no users). Change the password afterwards under *My account*. In *Settings → Demo data* an administrator can load clearly-labelled fictional records to demo the CRM, and remove them again.
+Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD`. The first sign-in creates the Administrator account (only while there are no users). Change the password afterwards under *My account*.
 
 ## Environment variables
 

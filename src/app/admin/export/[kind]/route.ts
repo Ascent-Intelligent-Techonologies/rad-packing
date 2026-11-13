@@ -2,7 +2,7 @@ import type { NextRequest } from "next/server";
 import { getDb } from "@/lib/db";
 import { getCurrentUser } from "@/lib/crm/auth";
 import { can } from "@/lib/crm/permissions";
-import { COMPANY_STATUSES, PRODUCT_LINES, QUOTE_STATUSES, SOURCES, STAGES, label } from "@/lib/crm/constants";
+import { COMPANY_STATUSES, QUOTE_STATUSES, SOURCES, STAGES, label, productLineLabel } from "@/lib/crm/constants";
 import { dubaiDate, dubaiDateTime, filsToAed, toCsv, type CsvCell } from "@/lib/crm/csv";
 
 const KINDS = ["enquiries", "customers", "contacts", "quotes"] as const;
@@ -77,7 +77,7 @@ async function build(kind: Kind): Promise<{ headers: string[]; rows: CsvCell[][]
         l.email,
         l.phone,
         l.industry,
-        l.products.map((p) => PRODUCT_LINES.find((x) => x.id === p)?.label ?? p).join("; "),
+        l.products.map(productLineLabel).join("; "),
         filsToAed(l.valueFils),
         l.owner?.name,
         dubaiDate(l.expectedCloseDate),

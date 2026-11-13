@@ -23,7 +23,11 @@ export type ArtKind =
   | "clipboard";
 
 const RULES: [RegExp, ArtKind][] = [
-  [/pallet/, "pallet"],
+  [/shrink-wrapping|shrink wrapping/, "roll"],
+  [/ispm|heat-treated|export-ready/, "crate"],
+  [/pallet|skid/, "pallet"],
+  [/off-site/, "crate"],
+  [/custom-industrial/, "crate"],
   [/crate|timber-case/, "crate"],
   [/nail-?less|plywood|e1-grade/, "box"],
   [/carton/, "carton"],

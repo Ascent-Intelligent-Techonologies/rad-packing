@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { ActionState } from "@/components/crm/forms";
 import { requireUser } from "@/lib/crm/auth";
-import { clearDemoData, loadDemoData } from "@/lib/crm/demo-data";
 import type { CompanySettings } from "@/lib/crm/settings";
 import { getDb } from "@/lib/db";
 
@@ -56,22 +55,4 @@ export async function saveSettings(_prev: ActionState, fd: FormData): Promise<Ac
   revalidatePath("/admin/settings");
   revalidatePath("/admin/quotes", "layout");
   return { ok: true, message: "Settings saved." };
-}
-
-function refreshEverything() {
-  revalidatePath("/admin", "layout");
-}
-
-export async function loadDemo(): Promise<ActionState> {
-  const user = await requireUser("team");
-  const res = await loadDemoData(user.id);
-  if (res.ok) refreshEverything();
-  return res.ok ? { ok: true, message: res.message } : { error: res.message };
-}
-
-export async function clearDemo(): Promise<ActionState> {
-  await requireUser("team");
-  const res = await clearDemoData();
-  if (res.ok) refreshEverything();
-  return res.ok ? { ok: true, message: res.message } : { error: res.message };
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Field } from "@/components/crm/ui";
 import { ActionForm, SubmitButton } from "@/components/crm/forms";
-import { PRODUCT_LINES, UNITS } from "@/lib/crm/constants";
+import { UNITS, productLineOptions } from "@/lib/crm/constants";
 import { fromFils } from "@/lib/crm/format";
 import { saveProduct } from "./actions";
 
@@ -32,7 +32,7 @@ export function ProductForm({ product, onDoneHref }: { product?: ProductFormValu
         <Field label="Category">
           <select name="category" defaultValue={product?.category ?? ""} className="field-sm">
             <option value="">Uncategorised</option>
-            {PRODUCT_LINES.map((l) => (
+            {productLineOptions([product?.category]).map((l) => (
               <option key={l.id} value={l.id}>
                 {l.label}
               </option>

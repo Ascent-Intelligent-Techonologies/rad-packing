@@ -9,7 +9,7 @@ import {
   ACTIVITY_KINDS,
   LOST_REASONS,
   MANUAL_ACTIVITY_KINDS,
-  PRODUCT_LINES,
+  productLineLabel,
   QUOTE_STATUSES,
   SOURCES,
   STAGES,
@@ -171,7 +171,7 @@ export default async function EnquiryDetail(props: PageProps<"/admin/enquiries/[
                 ["Phone", lead.phone],
                 ["Industry", lead.industry],
                 ["Source", label(SOURCES, lead.source)],
-                ["Interested in", lead.products.map((p) => PRODUCT_LINES.find((x) => x.id === p)?.label ?? p).join(", ")],
+                ["Interested in", lead.products.map(productLineLabel).join(", ")],
                 ["Page", lead.pageUrl],
               ].map(([k, v]) =>
                 v ? (

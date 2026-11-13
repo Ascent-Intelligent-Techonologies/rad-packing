@@ -1,4 +1,4 @@
-import { INDUSTRIES, PRIORITIES, PRODUCT_LINES, SOURCES } from "@/lib/crm/constants";
+import { INDUSTRIES, PRIORITIES, SOURCES, productLineOptions } from "@/lib/crm/constants";
 import { fromFils, toDateInput } from "@/lib/crm/format";
 import { Field } from "@/components/crm/ui";
 
@@ -89,7 +89,7 @@ export function EnquiryFields({
       <fieldset className="sm:col-span-2">
         <legend className="mb-1.5 text-xs font-bold">Interested in</legend>
         <div className="flex flex-wrap gap-2">
-          {PRODUCT_LINES.map((p) => (
+          {productLineOptions(d.products).map((p) => (
             <label key={p.id} className="cursor-pointer">
               <input type="checkbox" name="products" value={p.id} defaultChecked={d.products?.includes(p.id)} className="peer sr-only" />
               <span className="inline-flex min-h-[38px] items-center rounded-full border border-line bg-white px-3.5 text-[13px] font-semibold transition peer-checked:border-transparent peer-checked:bg-brand peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-amber">

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { PRODUCT_LINES, UNITS } from "@/lib/crm/constants";
+import { ALL_PRODUCT_LINES, PRODUCT_LINES, UNITS } from "@/lib/crm/constants";
 import { requireUser } from "@/lib/crm/auth";
 import { can } from "@/lib/crm/permissions";
 import { text, toFils } from "@/lib/crm/format";
@@ -20,7 +20,7 @@ export async function saveProduct(_prev: ActionState, fd: FormData): Promise<Act
   if (name.length > 200) return { error: "Name is too long (200 characters max)." };
 
   const category = text(fd.get("category"));
-  if (category && !PRODUCT_LINES.some((p) => p.id === category)) return { error: "Choose a valid category." };
+  if (category && !ALL_PRODUCT_LINES.some((p) => p.id === category)) return { error: "Choose a valid category." };
 
   const unit = text(fd.get("unit")) ?? "pcs";
   if (!UNITS.includes(unit)) return { error: "Choose a valid unit." };
@@ -83,7 +83,7 @@ export async function seedProductLines(): Promise<ActionState> {
     data: missing.map((l) => ({
       name: l.label,
       category: l.id,
-      unit: l.id === "turnkey" ? "job" : "pcs",
+      unit: "pcs",
       unitPriceFils: 0,
       active: true,
     })),

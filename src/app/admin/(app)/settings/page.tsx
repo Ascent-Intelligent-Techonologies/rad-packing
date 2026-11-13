@@ -1,18 +1,14 @@
-import { Database, FlaskConical, Trash2 } from "lucide-react";
-import { ActionForm, ConfirmButton, SubmitButton } from "@/components/crm/forms";
+import { ActionForm, SubmitButton } from "@/components/crm/forms";
 import { Field, PageHeader, Panel } from "@/components/crm/ui";
 import { requirePageAccess } from "@/lib/crm/auth";
-import { demoStatus } from "@/lib/crm/demo-data";
-import { fmtDate } from "@/lib/crm/format";
-import { can } from "@/lib/crm/permissions";
 import { getSettings } from "@/lib/crm/settings";
-import { clearDemo, loadDemo, saveSettings } from "./actions";
+import { saveSettings } from "./actions";
 
 export const metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
-  const user = await requirePageAccess("settings");
-  const [s, demo] = await Promise.all([getSettings(), can(user.role, "team") ? demoStatus() : null]);
+  await requirePageAccess("settings");
+  const s = await getSettings();
 
   return (
     <>
@@ -69,50 +65,6 @@ export default async function SettingsPage() {
           </ActionForm>
         </Panel>
 
-        {demo !== null && (
-          <Panel title="Demo data">
-            <div className="flex items-start gap-3 text-sm">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand">
-                <FlaskConical size={18} />
-              </span>
-              <div className="min-w-0">
-                <p>
-                  Fill the CRM with clearly fictional customers (named &ldquo;(demo)&rdquo;), enquiries, tasks, quotes and price-list entries
-                  so you can explore dashboards and reports. Everything is tracked, so{" "}
-                  <strong>Remove demo data</strong> deletes exactly what was added and nothing else.
-                </p>
-                {demo.loaded ? (
-                  <p className="mt-2 rounded-xl bg-amber-50 px-3.5 py-2.5 font-semibold text-amber-800">
-                    <Database size={14} className="mr-1.5 inline" />
-                    Demo data is loaded: {demo.summary}
-                    {demo.loadedAt ? ` (added ${fmtDate(demo.loadedAt)})` : ""}.
-                  </p>
-                ) : (
-                  <p className="mt-2 text-muted">No demo data is currently loaded.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="mt-5 flex flex-wrap items-start gap-4">
-              <ActionForm action={loadDemo}>
-                <SubmitButton className="btn btn-brand !min-h-[42px] !px-5 text-sm" pendingLabel="Loading demo data…">
-                  <FlaskConical size={16} /> Load demo data
-                </SubmitButton>
-              </ActionForm>
-              <ActionForm action={clearDemo}>
-                <ConfirmButton
-                  message="Remove all demo data? Only the records created by 'Load demo data' are deleted."
-                  className="btn btn-outline !min-h-[42px] !px-5 text-sm !text-red-600 hover:!border-red-300"
-                >
-                  <Trash2 size={16} /> Remove demo data
-                </ConfirmButton>
-              </ActionForm>
-            </div>
-            <p className="mt-3 text-xs text-muted">
-              Quote numbers used by demo quotes are released again on removal when no newer quote has been created.
-            </p>
-          </Panel>
-        )}
       </div>
     </>
   );

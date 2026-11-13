@@ -15,7 +15,8 @@ export function Footer() {
               <Logo uid="ftr" />
             </Link>
             <p className="mt-6 max-w-sm text-[15px] leading-relaxed text-white/65">
-              Industrial packaging and preservation specialists. Shielding your assets, extending their lifespan.
+              Sharjah-based industrial packaging company, supplying reliable and customized packaging solutions
+              across {site.serviceArea}.
             </p>
             <p className="mt-6 font-display text-xl font-bold leading-snug">
               Zero Rust. <span className="text-gradient">Zero Failures.</span>

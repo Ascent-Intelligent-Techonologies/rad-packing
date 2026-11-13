@@ -9,25 +9,29 @@ const body = Inter({ variable: "--font-body", subsets: ["latin"], display: "swap
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: "RAD Packing Solutions | Industrial Preservation & Export Packaging, Sharjah UAE",
+    default: "RAD Packing Solutions | Industrial Packaging, Pallets & Preservation, Sharjah UAE",
     template: "%s | RAD Packing Solutions",
   },
   description:
-    "Industrial packaging and preservation specialists in Sharjah, UAE. VCI films, barrier packaging, export crates, nail-less boxes and onsite packing. Zero rust. Zero failures.",
+    "Sharjah-based industrial packaging company serving the UAE and GCC. Wooden pallets, crates and heavy-duty skids, heat shrink wrapping, VCI and preservation packaging, and ISPM-15 export packaging.",
   keywords: [
     "industrial packaging UAE",
+    "wooden pallets Sharjah",
+    "Euro pallets UAE",
+    "heavy-duty skids",
+    "heat shrink wrapping UAE",
     "preservation packaging Sharjah",
     "VCI packaging",
     "export crates UAE",
-    "machinery packing",
-    "ISPM 15",
+    "ISPM 15 heat-treated packaging",
+    "industrial packaging GCC",
   ],
   openGraph: {
     type: "website",
     siteName: site.name,
     title: "RAD Packing Solutions | Maximum Protection. Zero Rust. Zero Failures.",
     description:
-      "Industrial preservation packaging, export crating and onsite packing for machinery, aerospace, electronics and pharma.",
+      "Wooden pallets, industrial packaging, heat shrink wrapping, preservation and export packaging for customers across the UAE and GCC.",
     locale: "en_AE",
   },
   twitter: { card: "summary_large_image" },

@@ -1,27 +1,34 @@
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, MapPin, Phone, Sparkles } from "lucide-react";
 import { Conveyor } from "@/components/Conveyor";
-import { CountUp } from "@/components/CountUp";
 import { FAQ } from "@/components/FAQ";
 import { HeroScene } from "@/components/HeroScene";
 import { ProductGlyph } from "@/components/Icon";
-import { IndustryExplorer } from "@/components/IndustryExplorer";
 import { LeadForm } from "@/components/LeadForm";
 import { OpenChatButton } from "@/components/OpenChatButton";
 import { Reveal } from "@/components/Reveal";
-import { process, products, services, site, whyRad } from "@/lib/site";
+import { process, products, site, whyRad } from "@/lib/site";
 
 const marquee = [
-  "VCI Films",
-  "High-Barrier Foils",
-  "Desiccants",
-  "Vacuum-Sealed Crating",
-  "ISPM 15 Compliant",
-  "Nail-Less Collapsible Boxes",
-  "3D Liners",
-  "Export Crates",
-  "ESD Shielding",
-  "Onsite & Mobile Packing",
+  "Wooden Pallets",
+  "Euro & CP Pallets",
+  "Wooden Crates & Boxes",
+  "Heavy-Duty Skids",
+  "Heat Shrink Wrapping",
+  "VCI Packaging",
+  "Vacuum Packaging",
+  "Moisture Barrier Packaging",
+  "ISPM-15 Heat-Treated Packaging",
+  "On-Site & Off-Site Packaging",
+];
+
+/** What the company profile says RAD specializes in. */
+const specialisms = [
+  "Wooden pallets",
+  "Industrial skids",
+  "Heavy-duty packaging",
+  "Heat shrink wrapping",
+  "Preservation packaging",
 ];
 
 export default function Home() {
@@ -32,15 +39,15 @@ export default function Home() {
         <HeroScene />
         <div className="container-x relative grid items-end gap-12 lg:grid-cols-[1.25fr_0.75fr]">
           <div>
-            <span className="eyebrow">Industrial Preservation Solutions · Sharjah, UAE</span>
+            <span className="eyebrow">Industrial Packaging Solutions · Sharjah, UAE</span>
             <h1 className="mt-6 font-display text-[2.7rem] font-extrabold leading-[1.02] sm:text-6xl lg:text-[5.2rem]">
               Maximum Protection.
               <br />
               <span className="text-gradient">Zero Rust.</span> Zero Failures.
             </h1>
             <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-white/75 sm:text-lg">
-              RAD Packing Solutions protects valuable machinery, equipment and sensitive components from corrosion,
-              moisture and environmental damage, from the factory floor to the far side of the ocean.
+              RAD Packing Solutions protects industrial goods, machinery and materials during transportation and
+              storage, with reliable, customized packaging for customers across {site.serviceArea}.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link href="/products" className="btn btn-accent !min-h-[54px] !px-8 text-base">
@@ -122,73 +129,38 @@ export default function Home() {
               <span className="text-brand">Extending their lifespan.</span>
             </h2>
             <p className="mt-7 text-lg leading-relaxed text-muted">
-              RAD Packing Solutions is a specialist in industrial packaging and preservation solutions, providing
-              reliable, high-performance protection for valuable assets, machinery, equipment and sensitive components.
-              We deliver tailored solutions designed to prevent corrosion, moisture damage and environmental
-              deterioration, ensuring asset integrity throughout storage, handling and transportation.
+              {site.legalName} is a Sharjah-based industrial packaging company providing reliable and customized
+              packaging solutions across {site.serviceArea}.
             </p>
             <p className="mt-5 text-lg leading-relaxed text-muted">
-              In an ever-moving global marketplace, the value of a product goes beyond its manufacturing. How it is
-              stored, handled, transported and preserved determines how well it performs when it reaches its destination.
+              We specialize in wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping and
+              preservation packaging. Our focus is on delivering quality, durability and customized solutions to
+              protect industrial goods, machinery and materials during transportation and storage.
             </p>
             <Link href="/about" className="btn btn-outline mt-9">
               Discover more about us <ArrowRight size={17} />
             </Link>
           </Reveal>
 
-          <Reveal delay={120} className="grid grid-cols-2 gap-4 self-center">
-            <div className="card col-span-2 bg-linear-to-br from-brand to-[#0d1190] p-8 text-white !border-0">
-              <p className="font-display text-7xl font-extrabold leading-none sm:text-8xl">
-                <CountUp to={25} suffix="+" />
+          <Reveal delay={120} className="grid gap-4 self-center">
+            <div className="card bg-linear-to-br from-brand to-[#0d1190] p-8 text-white !border-0">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-white/70">Based in Sharjah</p>
+              <p className="mt-3 font-display text-4xl font-extrabold leading-[1.1] sm:text-5xl">Serving the UAE &amp; GCC</p>
+              <p className="mt-4 leading-relaxed text-white/75">
+                Dependable, cost-effective and customized packaging for industrial and export requirements.
               </p>
-              <p className="mt-4 text-lg font-semibold">Years of proven expertise</p>
-              <p className="mt-1 text-sm text-white/70">in industrial packaging &amp; preservation</p>
             </div>
             <div className="card p-6">
-              <p className="font-display text-5xl font-extrabold text-brand">
-                <CountUp to={5} />
-              </p>
-              <p className="mt-2 text-sm font-semibold text-muted">Industries supported</p>
-            </div>
-            <div className="card p-6">
-              <p className="font-display text-5xl font-extrabold text-brand">
-                <CountUp to={5} />
-              </p>
-              <p className="mt-2 text-sm font-semibold text-muted">Product &amp; solution lines</p>
+              <p className="text-sm font-semibold text-muted">We specialize in</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {specialisms.map((x) => (
+                  <li key={x} className="rounded-full border border-line bg-surface px-4 py-2 text-sm font-semibold">
+                    {x}
+                  </li>
+                ))}
+              </ul>
             </div>
           </Reveal>
-        </div>
-      </section>
-
-      {/* ───────────── WHAT WE DO ───────────── */}
-      <section className="section bg-white">
-        <div className="container-x">
-          <Reveal className="max-w-2xl">
-            <span className="eyebrow">What we do</span>
-            <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
-              Protection engineered around your asset.
-            </h2>
-          </Reveal>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((s, i) => (
-              <Reveal key={s.title} delay={i * 80}>
-                <article className="card card-hover group flex h-full flex-col bg-surface p-7">
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white text-brand shadow-sm transition group-hover:bg-linear-to-br group-hover:from-orange group-hover:to-pink group-hover:text-white">
-                    <ProductGlyph name={s.icon} size={26} />
-                  </span>
-                  <h3 className="mt-6 font-display text-xl font-bold uppercase leading-snug tracking-tight">{s.title}</h3>
-                  <p className="mt-3 flex-1 text-[15px] leading-relaxed text-muted">{s.body}</p>
-                  <Link
-                    href={`/products?interest=${s.interest}#quote`}
-                    className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand"
-                  >
-                    Enquire
-                    <ArrowRight size={16} className="transition group-hover:translate-x-1" />
-                  </Link>
-                </article>
-              </Reveal>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -197,12 +169,12 @@ export default function Home() {
         <HeroScene />
         <div className="container-x relative">
           <Reveal className="max-w-2xl">
-            <span className="eyebrow">Turnkey packing</span>
+            <span className="eyebrow">On-site &amp; off-site packing</span>
             <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
               From site assessment to <span className="text-gradient">export-ready</span>.
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-white/70">
-              One accountable partner for the whole job: planning, materials, on-site packing, preservation, crating
+              One partner for the whole job: planning, materials, packing at your site or ours, preservation, crating
               and export preparation.
             </p>
           </Reveal>
@@ -220,28 +192,13 @@ export default function Home() {
           </ol>
           <Conveyor />
           <div className="mt-10 flex flex-wrap gap-3">
-            <Link href="/products/category/turnkey" className="btn btn-accent">
-              See turnkey contracting <ArrowRight size={17} />
+            <Link href="/products/category/industrial-packaging/on-site-off-site-packaging" className="btn btn-accent">
+              See on-site &amp; off-site packing <ArrowRight size={17} />
             </Link>
             <OpenChatButton prompt="Tell me about onsite packing" className="btn btn-glass">
               <Sparkles size={17} /> Tell me about onsite packing
             </OpenChatButton>
           </div>
-        </div>
-      </section>
-
-      {/* ───────────── INDUSTRIES ───────────── */}
-      <section className="section">
-        <div className="container-x">
-          <Reveal className="max-w-2xl">
-            <span className="eyebrow">Industries we support</span>
-            <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
-              From jet engines to life-saving drugs.
-            </h2>
-          </Reveal>
-          <Reveal className="mt-12" delay={100}>
-            <IndustryExplorer />
-          </Reveal>
         </div>
       </section>
 
@@ -251,7 +208,7 @@ export default function Home() {
           <Reveal className="max-w-2xl">
             <span className="eyebrow">Why RAD</span>
             <h2 className="mt-5 font-display text-4xl font-extrabold leading-[1.08] sm:text-5xl">
-              Lasting integrity, delivered.
+              Dependable, cost-effective, customized.
             </h2>
           </Reveal>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
