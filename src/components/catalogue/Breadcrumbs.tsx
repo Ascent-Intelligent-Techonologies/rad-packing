@@ -4,9 +4,8 @@ import { site } from "@/lib/site";
 
 export type Crumb = { label: string; href?: string };
 
-/** Breadcrumb trail for the dark page hero, plus BreadcrumbList structured data. */
-export function Breadcrumbs({ items, tone = "dark" }: { items: Crumb[]; tone?: "dark" | "light" }) {
-  const light = tone === "light";
+/** BreadcrumbList structured data for a trail (no visible output). */
+export function BreadcrumbData({ items }: { items: Crumb[] }) {
   const ld = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -17,6 +16,13 @@ export function Breadcrumbs({ items, tone = "dark" }: { items: Crumb[]; tone?: "
       ...(c.href ? { item: `${site.url}${c.href}` } : {}),
     })),
   };
+  // JSON-LD built from our own data; "<" is escaped so nothing in it can close the script tag
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />;
+}
+
+/** Breadcrumb trail for the dark page hero, plus BreadcrumbList structured data. */
+export function Breadcrumbs({ items, tone = "dark" }: { items: Crumb[]; tone?: "dark" | "light" }) {
+  const light = tone === "light";
   return (
     <>
       <nav aria-label="Breadcrumb">
@@ -37,8 +43,7 @@ export function Breadcrumbs({ items, tone = "dark" }: { items: Crumb[]; tone?: "
           ))}
         </ol>
       </nav>
-      {/* JSON-LD built from our own data; "<" is escaped so nothing in it can close the script tag */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld).replace(/</g, "\\u003c") }} />
+      <BreadcrumbData items={items} />
     </>
   );
 }

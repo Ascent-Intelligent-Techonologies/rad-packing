@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { HeroCrumbs, HeroEyebrow, HeroIntro, HeroTitle, type HeroCategory } from "@/components/catalogue/CategoryHero";
 import { CatalogueBrowser, CatalogueSkeleton } from "@/components/catalogue/CatalogueBrowser";
+import { CatalogueTop } from "@/components/catalogue/CatalogueTop";
+import { CurrentCategoryCrumbData, CurrentCategoryTitle, type CategoryRef } from "@/components/catalogue/CurrentCategory";
 import { QuoteSection } from "@/components/catalogue/QuoteSection";
-import { PageHero } from "@/components/PageHero";
 import { getCategories, getCategoryByPath } from "@/lib/catalogue/public";
 import { categoryHref } from "@/lib/catalogue/shared";
 
@@ -35,24 +35,15 @@ export default async function CategoryPage(props: PageProps<"/products/category/
   if (!found) notFound();
   const { category } = found;
 
-  // The hero text is rendered from this list by small client components, so it stays correct when
-  // the visitor switches category in place (the catalogue below does that without reloading).
-  const heroCategories: HeroCategory[] = (await getCategories()).map((c) => ({
-    path: c.path,
-    name: c.name,
-    intro: c.description ?? c.summary,
-  }));
+  // The title and breadcrumb data are rendered from this list by small client components, so they
+  // stay correct when the visitor switches category in place (the catalogue does that without reloading).
+  const all: CategoryRef[] = (await getCategories()).map((c) => ({ path: c.path, name: c.name }));
 
   return (
     <>
-      <PageHero
-        compact
-        top={<HeroCrumbs categories={heroCategories} />}
-        eyebrow={<HeroEyebrow categories={heroCategories} />}
-        title={<HeroTitle categories={heroCategories} />}
-      >
-        <HeroIntro categories={heroCategories} />
-      </PageHero>
+      <CatalogueTop title={<CurrentCategoryTitle categories={all} />}>
+        <CurrentCategoryCrumbData categories={all} />
+      </CatalogueTop>
 
       <section className="section !pt-8">
         <div className="container-x">
