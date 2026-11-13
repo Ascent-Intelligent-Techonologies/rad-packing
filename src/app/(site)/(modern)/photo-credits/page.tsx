@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { CatalogPhoto } from "@/components/catalogue/CatalogPhoto";
+import { homePhotoCredits } from "@/components/classic/content";
 import { LegalPage } from "@/components/LegalPage";
 import { getPhotoCredits } from "@/lib/catalogue/public";
 import { productHref } from "@/lib/catalogue/shared";
 
 export const metadata: Metadata = {
   title: "Photo credits",
-  description: "Credits and licences for the representative photos used in the RAD Packing Solutions product catalogue.",
+  description: "Credits and licences for the photos by other photographers used on the RAD Packing Solutions website.",
   alternates: { canonical: "/photo-credits" },
 };
 
@@ -75,6 +77,35 @@ export default async function PhotoCredits() {
           })}
         </ul>
       )}
+
+      <h2>Home page photos</h2>
+      <p>
+        These photos on our home page are by other photographers, who share them for free use on Unsplash and Pexels.
+        They have been cropped and resized for this website.
+      </p>
+      <ul className="!mt-8 !list-none !pl-0">
+        {homePhotoCredits.map((c) => (
+          <li key={c.image} className="!mt-0 flex items-center gap-4 border-t border-line py-4 first:border-t-0">
+            <span className="relative h-16 w-20 shrink-0 overflow-hidden rounded-xl bg-surface">
+              <Image src={c.image} alt="" fill sizes="80px" className="object-cover" />
+            </span>
+            <span className="min-w-0 text-[15px] leading-relaxed">
+              {c.subject}
+              <span className="block text-muted">
+                Photo:{" "}
+                {c.url ? (
+                  <a href={c.url} target="_blank" rel="noopener noreferrer nofollow">
+                    {c.by}
+                  </a>
+                ) : (
+                  c.by
+                )}{" "}
+                on {c.source}
+              </span>
+            </span>
+          </li>
+        ))}
+      </ul>
     </LegalPage>
   );
 }

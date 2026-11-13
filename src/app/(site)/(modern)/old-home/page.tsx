@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, MapPin, Phone, Sparkles } from "lucide-react";
 import { Conveyor } from "@/components/Conveyor";
@@ -31,7 +32,14 @@ const specialisms = [
   "Preservation packaging",
 ];
 
-export default function Home() {
+/** The previous landing page, kept for reference. It is not linked from the menu or listed for search engines. */
+export const metadata: Metadata = {
+  title: "Previous home page",
+  alternates: { canonical: "/" },
+  robots: { index: false, follow: true },
+};
+
+export default function OldHome() {
   return (
     <>
       {/* ───────────── HERO ───────────── */}

@@ -1,6 +1,4 @@
 import { ChatWidget } from "@/components/ChatWidget";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
 import { StickyActionBar } from "@/components/StickyActionBar";
 import { site } from "@/lib/site";
 
@@ -17,6 +15,11 @@ const jsonLd = {
     "Sharjah-based industrial packaging company: wooden pallets, industrial skids, heavy-duty packaging, heat shrink wrapping, preservation and export packaging across the UAE and GCC.",
 };
 
+/**
+ * Shared by every public page. The header, `<main>` and footer come from the group layouts below:
+ * `(classic)` is the home page, rebuilt to match RAD's original landing page, and `(modern)` is
+ * every other page.
+ */
 export default function SiteLayout({ children }: LayoutProps<"/">) {
   return (
     <>
@@ -27,11 +30,7 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
         Skip to content
       </a>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Header />
-      <main id="main" className="flex-1">
-        {children}
-      </main>
-      <Footer />
+      {children}
       <StickyActionBar />
       <ChatWidget />
     </>
