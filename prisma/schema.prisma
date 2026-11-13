@@ -327,6 +327,8 @@ model CatalogImage {
   category   CatalogCategory?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   position   Int               @default(0)
   alt        String?
+  credit     String? // who took it and under which licence, e.g. "Jane Doe / Wikimedia Commons, CC BY-SA 4.0"
+  creditUrl  String? // where the original can be found
   mime       String // image/webp | image/jpeg | image/png
   width      Int
   height     Int

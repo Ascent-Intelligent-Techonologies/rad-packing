@@ -11,7 +11,7 @@ const notFound = () => new Response("Not found", { status: 404, headers: { "Cach
  */
 export async function GET(req: NextRequest, ctx: RouteContext<"/media/[id]">) {
   const { id } = await ctx.params;
-  if (!/^[a-z0-9]{8,40}$/i.test(id)) return notFound();
+  if (!/^[a-z0-9_]{8,40}$/i.test(id)) return notFound();
   const db = getDb();
   if (!db) return notFound();
 

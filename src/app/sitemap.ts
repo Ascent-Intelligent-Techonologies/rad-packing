@@ -4,7 +4,7 @@ import { categoryHref, productHref } from "@/lib/catalogue/shared";
 import { site } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const pages: MetadataRoute.Sitemap = ["", "/about", "/products", "/contact", "/privacy-policy", "/accessibility-statement"].map((p) => ({
+  const pages: MetadataRoute.Sitemap = ["", "/about", "/products", "/contact", "/privacy-policy", "/accessibility-statement", "/photo-credits"].map((p) => ({
     url: `${site.url}${p}`,
     changeFrequency: "monthly",
     priority: p === "" ? 1 : 0.7,

@@ -8,7 +8,15 @@ import { PAGE_SIZE, indexCategories, readSpecs, type SpecRow } from "./shared";
  * Only published products in published categories (whose parents are published too) are returned.
  */
 
-export type ImageRef = { id: string; alt: string | null; width: number; height: number };
+export type ImageRef = {
+  id: string;
+  alt: string | null;
+  width: number;
+  height: number;
+  /** attribution for photos by other photographers (shown under the photo and on /photo-credits) */
+  credit: string | null;
+  creditUrl: string | null;
+};
 
 export type PublicCategory = {
   id: string;
@@ -51,7 +59,8 @@ export type ProductPage = {
   alsoInAll?: number;
 };
 
-const coverSelect = { orderBy: { position: "asc" as const }, take: 1, select: { id: true, alt: true, width: true, height: true } };
+const imageFields = { id: true, alt: true, width: true, height: true, credit: true, creditUrl: true } as const;
+const coverSelect = { orderBy: { position: "asc" as const }, take: 1, select: imageFields };
 
 /** Visible categories (flat, tree order) with product counts. */
 export async function getCategories(): Promise<PublicCategory[]> {
@@ -287,7 +296,7 @@ export async function getProduct(slug: string): Promise<ProductDetail | null> {
   if (!db) return null;
   const p = await db.catalogProduct.findFirst({
     where: { slug, published: true },
-    include: { images: { orderBy: { position: "asc" }, select: { id: true, alt: true, width: true, height: true } } },
+    include: { images: { orderBy: { position: "asc" }, select: imageFields } },
   });
   if (!p) return null;
 
@@ -358,4 +367,34 @@ export async function getCatalogueIndexForSeo(): Promise<{
     products,
     categories: cats.map((c) => ({ path: c.path, updatedAt: updated.get(c.id) ?? new Date(0) })),
   };
+}
+
+export type PhotoCredit = { image: ImageRef; credit: string; creditUrl: string | null; productSlug: string; productTitle: string };
+
+/** Every credited photo that is visible on the site, for the /photo-credits page. */
+export async function getPhotoCredits(): Promise<PhotoCredit[]> {
+  "use cache";
+  cacheLife("hours");
+  cacheTag("catalogue");
+
+  const db = getDb();
+  if (!db) return [];
+  const cats = await getCategories();
+  const rows = await db.catalogImage.findMany({
+    where: { credit: { not: null }, product: { published: true, categoryId: { in: cats.map((c) => c.id) } } },
+    orderBy: [{ product: { title: "asc" } }, { position: "asc" }],
+    select: { ...imageFields, product: { select: { slug: true, title: true } } },
+    take: 500,
+  });
+  return rows.flatMap((r) =>
+    r.credit && r.product
+      ? [{
+          image: { id: r.id, alt: r.alt, width: r.width, height: r.height, credit: r.credit, creditUrl: r.creditUrl },
+          credit: r.credit,
+          creditUrl: r.creditUrl,
+          productSlug: r.product.slug,
+          productTitle: r.product.title,
+        }]
+      : [],
+  );
 }

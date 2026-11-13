@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { imageSrc } from "@/lib/catalogue/shared";
@@ -68,6 +69,23 @@ export function ProductGallery({
           </>
         )}
       </div>
+
+      {current?.credit && (
+        <p className="mt-2 px-1 text-xs leading-relaxed text-muted">
+          Representative photo:{" "}
+          {current.creditUrl ? (
+            <a href={current.creditUrl} target="_blank" rel="noopener noreferrer nofollow" className="underline underline-offset-2 hover:text-brand">
+              {current.credit}
+            </a>
+          ) : (
+            current.credit
+          )}
+          .{" "}
+          <Link href="/photo-credits" className="underline underline-offset-2 hover:text-brand">
+            Photo credits
+          </Link>
+        </p>
+      )}
 
       {count > 1 && (
         <ul className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label="Product photos">

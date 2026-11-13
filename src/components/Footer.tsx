@@ -44,6 +44,11 @@ export function Footer() {
                   Accessibility Statement
                 </Link>
               </li>
+              <li>
+                <Link href="/photo-credits" className="text-white/80 transition hover:text-amber">
+                  Photo credits
+                </Link>
+              </li>
             </ul>
           </div>
 

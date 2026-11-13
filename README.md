@@ -12,6 +12,7 @@ Modern, mobile-first rebuild of [radpacking.com](https://www.radpacking.com) wit
   - Choosing a category, searching and paging update only the product area (no page reload); the address bar still changes, so views can be shared and Back works. It also works without JavaScript.
   - Search is word based (any order, singular or plural, title matches first) and looks in titles, tags, categories and descriptions. See `searchCatalogue` in `src/lib/catalogue/public.ts`.
   - Products without a photo show an original illustration picked from the product type (`src/components/catalogue/ProductArt.tsx`) until staff upload a real photo.
+  - 14 starter products carry a representative photo from Wikimedia Commons (public domain or Creative Commons). The files and their sources are in `prisma/seed/catalogue-photos` (see `CREDITS.md` there). Credited photos show a credit line under the picture and are listed on `/photo-credits`. `scripts/seed-catalogue-photos.mjs` loads them once per database during the Vercel build (`npm run db:seed-photos` locally); photos that staff later replace or delete are never put back.
   - Everything is managed from the admin (see *Website catalogue* below), cached, and refreshed the moment staff save a change.
 - Header with both phone numbers, location bar, mobile menu, and a thumb-reach **Call / WhatsApp / Quote** bar on phones.
 - Full-bleed looping "packaging line" hero (drop a real clip at `public/media/hero.mp4` and it fades in over the animation).
